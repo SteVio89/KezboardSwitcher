@@ -1,0 +1,556 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		F8E890F92E376B0C00A1DC65 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F8E890E22E376B0B00A1DC65 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F8E890E92E376B0B00A1DC65;
+			remoteInfo = KezboardSwitcher;
+		};
+		F8E891032E376B0C00A1DC65 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F8E890E22E376B0B00A1DC65 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F8E890E92E376B0B00A1DC65;
+			remoteInfo = KezboardSwitcher;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F8E890EA2E376B0B00A1DC65 /* KezboardSwitcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KezboardSwitcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8E890F82E376B0C00A1DC65 /* KezboardSwitcherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KezboardSwitcherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8E891022E376B0C00A1DC65 /* KezboardSwitcherUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KezboardSwitcherUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		F8E890EC2E376B0B00A1DC65 /* KezboardSwitcher */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = KezboardSwitcher;
+			sourceTree = "<group>";
+		};
+		F8E890FB2E376B0C00A1DC65 /* KezboardSwitcherTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = KezboardSwitcherTests;
+			sourceTree = "<group>";
+		};
+		F8E891052E376B0C00A1DC65 /* KezboardSwitcherUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = KezboardSwitcherUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F8E890E72E376B0B00A1DC65 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8E890F52E376B0C00A1DC65 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8E890FF2E376B0C00A1DC65 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F8E890E12E376B0B00A1DC65 = {
+			isa = PBXGroup;
+			children = (
+				F8E890EC2E376B0B00A1DC65 /* KezboardSwitcher */,
+				F8E890FB2E376B0C00A1DC65 /* KezboardSwitcherTests */,
+				F8E891052E376B0C00A1DC65 /* KezboardSwitcherUITests */,
+				F8E890EB2E376B0B00A1DC65 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F8E890EB2E376B0B00A1DC65 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F8E890EA2E376B0B00A1DC65 /* KezboardSwitcher.app */,
+				F8E890F82E376B0C00A1DC65 /* KezboardSwitcherTests.xctest */,
+				F8E891022E376B0C00A1DC65 /* KezboardSwitcherUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F8E890E92E376B0B00A1DC65 /* KezboardSwitcher */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F8E8910C2E376B0C00A1DC65 /* Build configuration list for PBXNativeTarget "KezboardSwitcher" */;
+			buildPhases = (
+				F8E890E62E376B0B00A1DC65 /* Sources */,
+				F8E890E72E376B0B00A1DC65 /* Frameworks */,
+				F8E890E82E376B0B00A1DC65 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F8E890EC2E376B0B00A1DC65 /* KezboardSwitcher */,
+			);
+			name = KezboardSwitcher;
+			packageProductDependencies = (
+			);
+			productName = KezboardSwitcher;
+			productReference = F8E890EA2E376B0B00A1DC65 /* KezboardSwitcher.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F8E890F72E376B0C00A1DC65 /* KezboardSwitcherTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F8E8910F2E376B0C00A1DC65 /* Build configuration list for PBXNativeTarget "KezboardSwitcherTests" */;
+			buildPhases = (
+				F8E890F42E376B0C00A1DC65 /* Sources */,
+				F8E890F52E376B0C00A1DC65 /* Frameworks */,
+				F8E890F62E376B0C00A1DC65 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F8E890FA2E376B0C00A1DC65 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F8E890FB2E376B0C00A1DC65 /* KezboardSwitcherTests */,
+			);
+			name = KezboardSwitcherTests;
+			packageProductDependencies = (
+			);
+			productName = KezboardSwitcherTests;
+			productReference = F8E890F82E376B0C00A1DC65 /* KezboardSwitcherTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F8E891012E376B0C00A1DC65 /* KezboardSwitcherUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F8E891122E376B0C00A1DC65 /* Build configuration list for PBXNativeTarget "KezboardSwitcherUITests" */;
+			buildPhases = (
+				F8E890FE2E376B0C00A1DC65 /* Sources */,
+				F8E890FF2E376B0C00A1DC65 /* Frameworks */,
+				F8E891002E376B0C00A1DC65 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F8E891042E376B0C00A1DC65 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F8E891052E376B0C00A1DC65 /* KezboardSwitcherUITests */,
+			);
+			name = KezboardSwitcherUITests;
+			packageProductDependencies = (
+			);
+			productName = KezboardSwitcherUITests;
+			productReference = F8E891022E376B0C00A1DC65 /* KezboardSwitcherUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F8E890E22E376B0B00A1DC65 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					F8E890E92E376B0B00A1DC65 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					F8E890F72E376B0C00A1DC65 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = F8E890E92E376B0B00A1DC65;
+					};
+					F8E891012E376B0C00A1DC65 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = F8E890E92E376B0B00A1DC65;
+					};
+				};
+			};
+			buildConfigurationList = F8E890E52E376B0B00A1DC65 /* Build configuration list for PBXProject "KezboardSwitcher" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F8E890E12E376B0B00A1DC65;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F8E890EB2E376B0B00A1DC65 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F8E890E92E376B0B00A1DC65 /* KezboardSwitcher */,
+				F8E890F72E376B0C00A1DC65 /* KezboardSwitcherTests */,
+				F8E891012E376B0C00A1DC65 /* KezboardSwitcherUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F8E890E82E376B0B00A1DC65 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8E890F62E376B0C00A1DC65 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8E891002E376B0C00A1DC65 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F8E890E62E376B0B00A1DC65 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8E890F42E376B0C00A1DC65 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8E890FE2E376B0C00A1DC65 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F8E890FA2E376B0C00A1DC65 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F8E890E92E376B0B00A1DC65 /* KezboardSwitcher */;
+			targetProxy = F8E890F92E376B0C00A1DC65 /* PBXContainerItemProxy */;
+		};
+		F8E891042E376B0C00A1DC65 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F8E890E92E376B0B00A1DC65 /* KezboardSwitcher */;
+			targetProxy = F8E891032E376B0C00A1DC65 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F8E8910A2E376B0C00A1DC65 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = KYHSSJW693;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F8E8910B2E376B0C00A1DC65 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = KYHSSJW693;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		F8E8910D2E376B0C00A1DC65 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = KezboardSwitcher/KezboardSwitcher.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KYHSSJW693;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.stevio.KezboardSwitcher;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F8E8910E2E376B0C00A1DC65 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = KezboardSwitcher/KezboardSwitcher.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KYHSSJW693;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.stevio.KezboardSwitcher;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		F8E891102E376B0C00A1DC65 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KYHSSJW693;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.stevio.KezboardSwitcherTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KezboardSwitcher.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KezboardSwitcher";
+			};
+			name = Debug;
+		};
+		F8E891112E376B0C00A1DC65 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KYHSSJW693;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.stevio.KezboardSwitcherTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KezboardSwitcher.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KezboardSwitcher";
+			};
+			name = Release;
+		};
+		F8E891132E376B0C00A1DC65 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KYHSSJW693;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.stevio.KezboardSwitcherUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = KezboardSwitcher;
+			};
+			name = Debug;
+		};
+		F8E891142E376B0C00A1DC65 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KYHSSJW693;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.stevio.KezboardSwitcherUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = KezboardSwitcher;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F8E890E52E376B0B00A1DC65 /* Build configuration list for PBXProject "KezboardSwitcher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8E8910A2E376B0C00A1DC65 /* Debug */,
+				F8E8910B2E376B0C00A1DC65 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F8E8910C2E376B0C00A1DC65 /* Build configuration list for PBXNativeTarget "KezboardSwitcher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8E8910D2E376B0C00A1DC65 /* Debug */,
+				F8E8910E2E376B0C00A1DC65 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F8E8910F2E376B0C00A1DC65 /* Build configuration list for PBXNativeTarget "KezboardSwitcherTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8E891102E376B0C00A1DC65 /* Debug */,
+				F8E891112E376B0C00A1DC65 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F8E891122E376B0C00A1DC65 /* Build configuration list for PBXNativeTarget "KezboardSwitcherUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8E891132E376B0C00A1DC65 /* Debug */,
+				F8E891142E376B0C00A1DC65 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F8E890E22E376B0B00A1DC65 /* Project object */;
+}
