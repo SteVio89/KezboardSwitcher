@@ -6,6 +6,16 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F8E890EE2E376B0B00A1DC65 /* KezboardSwitcherApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E890ED2E376B0B00A1DC65 /* KezboardSwitcherApp.swift */; };
+		F8E890F02E376B0B00A1DC65 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E890EF2E376B0B00A1DC65 /* ContentView.swift */; };
+		F8E8911C2E376F0900A1DC65 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8E8911A2E376F0900A1DC65 /* Assets.xcassets */; };
+		F8E8912B2E37740C00A1DC65 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E8912A2E37740C00A1DC65 /* AppDelegate.swift */; };
+		F8E8912D2E3774F000A1DC65 /* KeyboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E8912C2E3774F000A1DC65 /* KeyboardManager.swift */; };
+		F8E8912F2E396E4300A1DC65 /* Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E8912E2E396E4300A1DC65 /* Keyboard.swift */; };
+		F8E891332E3ACB8100A1DC65 /* LayoutDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E891322E3ACB8100A1DC65 /* LayoutDetector.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		F8E890F92E376B0C00A1DC65 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -25,16 +35,20 @@
 
 /* Begin PBXFileReference section */
 		F8E890EA2E376B0B00A1DC65 /* KezboardSwitcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KezboardSwitcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8E890ED2E376B0B00A1DC65 /* KezboardSwitcherApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KezboardSwitcherApp.swift; sourceTree = "<group>"; };
+		F8E890EF2E376B0B00A1DC65 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F8E890F32E376B0C00A1DC65 /* KezboardSwitcher.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KezboardSwitcher.entitlements; sourceTree = "<group>"; };
 		F8E890F82E376B0C00A1DC65 /* KezboardSwitcherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KezboardSwitcherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8E891022E376B0C00A1DC65 /* KezboardSwitcherUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KezboardSwitcherUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8E8911A2E376F0900A1DC65 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F8E8912A2E37740C00A1DC65 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		F8E8912C2E3774F000A1DC65 /* KeyboardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManager.swift; sourceTree = "<group>"; };
+		F8E8912E2E396E4300A1DC65 /* Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard.swift; sourceTree = "<group>"; };
+		F8E891322E3ACB8100A1DC65 /* LayoutDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutDetector.swift; sourceTree = "<group>"; };
+		F8E891352E3B523D00A1DC65 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		F8E890EC2E376B0B00A1DC65 /* KezboardSwitcher */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = KezboardSwitcher;
-			sourceTree = "<group>";
-		};
 		F8E890FB2E376B0C00A1DC65 /* KezboardSwitcherTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = KezboardSwitcherTests;
@@ -75,9 +89,10 @@
 		F8E890E12E376B0B00A1DC65 = {
 			isa = PBXGroup;
 			children = (
-				F8E890EC2E376B0B00A1DC65 /* KezboardSwitcher */,
+				F8E891222E37717C00A1DC65 /* KezboardSwitcher */,
 				F8E890FB2E376B0C00A1DC65 /* KezboardSwitcherTests */,
 				F8E891052E376B0C00A1DC65 /* KezboardSwitcherUITests */,
+				F8E891342E3B523D00A1DC65 /* Frameworks */,
 				F8E890EB2E376B0B00A1DC65 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +105,77 @@
 				F8E891022E376B0C00A1DC65 /* KezboardSwitcherUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		F8E891222E37717C00A1DC65 /* KezboardSwitcher */ = {
+			isa = PBXGroup;
+			children = (
+				F8E891272E37732A00A1DC65 /* Shared */,
+				F8E891242E3772FC00A1DC65 /* Features */,
+				F8E891232E3772E200A1DC65 /* App */,
+				F8E890F32E376B0C00A1DC65 /* KezboardSwitcher.entitlements */,
+				F8E8911A2E376F0900A1DC65 /* Assets.xcassets */,
+			);
+			path = KezboardSwitcher;
+			sourceTree = "<group>";
+		};
+		F8E891232E3772E200A1DC65 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				F8E890ED2E376B0B00A1DC65 /* KezboardSwitcherApp.swift */,
+				F8E8912A2E37740C00A1DC65 /* AppDelegate.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		F8E891242E3772FC00A1DC65 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				F8E891262E37731000A1DC65 /* CoreLogic */,
+				F8E891252E37730600A1DC65 /* Configuration */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		F8E891252E37730600A1DC65 /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				F8E891292E3773B400A1DC65 /* View */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		F8E891262E37731000A1DC65 /* CoreLogic */ = {
+			isa = PBXGroup;
+			children = (
+				F8E8912C2E3774F000A1DC65 /* KeyboardManager.swift */,
+				F8E891322E3ACB8100A1DC65 /* LayoutDetector.swift */,
+			);
+			path = CoreLogic;
+			sourceTree = "<group>";
+		};
+		F8E891272E37732A00A1DC65 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				F8E8912E2E396E4300A1DC65 /* Keyboard.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		F8E891292E3773B400A1DC65 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				F8E890EF2E376B0B00A1DC65 /* ContentView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		F8E891342E3B523D00A1DC65 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F8E891352E3B523D00A1DC65 /* AppKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -106,9 +192,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				F8E890EC2E376B0B00A1DC65 /* KezboardSwitcher */,
 			);
 			name = KezboardSwitcher;
 			packageProductDependencies = (
@@ -212,6 +295,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8E8911C2E376F0900A1DC65 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,6 +320,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8E8912B2E37740C00A1DC65 /* AppDelegate.swift in Sources */,
+				F8E891332E3ACB8100A1DC65 /* LayoutDetector.swift in Sources */,
+				F8E8912D2E3774F000A1DC65 /* KeyboardManager.swift in Sources */,
+				F8E8912F2E396E4300A1DC65 /* Keyboard.swift in Sources */,
+				F8E890F02E376B0B00A1DC65 /* ContentView.swift in Sources */,
+				F8E890EE2E376B0B00A1DC65 /* KezboardSwitcherApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,6 +485,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = KezboardSwitcher/KezboardSwitcher.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -402,11 +493,14 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = KezboardSwitcher;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.stevio.KezboardSwitcher;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -422,6 +516,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = KezboardSwitcher/KezboardSwitcher.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -429,11 +524,14 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = KezboardSwitcher;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.stevio.KezboardSwitcher;
 				PRODUCT_NAME = "$(TARGET_NAME)";
