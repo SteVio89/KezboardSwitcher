@@ -11,6 +11,7 @@ import AppKit
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
     var openConfigWindow: (() -> Void)?
+    var isFirstLaunch: Bool = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -28,6 +29,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(quitItem)
 
         statusItem?.menu = menu
+
+        // Hide the window on launch unless this is the first launch (no config exists)
+        if !isFirstLaunch {
+            DispatchQueue.main.async {
+                for window in NSApp.windows {
+                    window.close()
+                }
+            }
+        }
+    }
+
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        return false
     }
 
     @objc private func openConfiguration() {

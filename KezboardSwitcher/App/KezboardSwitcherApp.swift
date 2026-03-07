@@ -14,6 +14,12 @@ struct KezboardSwitcherApp: App {
 
     @Environment(\.openWindow) private var openWindow
 
+    init() {
+        let configPath = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent(".config/KezboardSwitcher/config.json")
+        appDelegate.isFirstLaunch = !FileManager.default.fileExists(atPath: configPath.path)
+    }
+
     var body: some Scene {
         Window("KezboardSwitcher", id: "config") {
             ContentView()
@@ -22,7 +28,13 @@ struct KezboardSwitcherApp: App {
                     appDelegate.openConfigWindow = { [openWindow] in
                         openWindow(id: "config")
                     }
-                    await viewModel.initialize()
+                    // Use unstructured Task so initialization completes
+                    // even if the window is closed immediately on launch
+                    if viewModel.keyboardManager == nil {
+                        Task { @MainActor [viewModel] in
+                            await viewModel.initialize()
+                        }
+                    }
                 }
         }
     }

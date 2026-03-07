@@ -7,22 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F8E890EE2E376B0B00A1DC65 /* KezboardSwitcherApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E890ED2E376B0B00A1DC65 /* KezboardSwitcherApp.swift */; };
-		F8E890F02E376B0B00A1DC65 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E890EF2E376B0B00A1DC65 /* ContentView.swift */; };
-		F8E8911C2E376F0900A1DC65 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8E8911A2E376F0900A1DC65 /* Assets.xcassets */; };
-		F8E8912B2E37740C00A1DC65 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E8912A2E37740C00A1DC65 /* AppDelegate.swift */; };
-		F8E8912D2E3774F000A1DC65 /* KeyboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E8912C2E3774F000A1DC65 /* KeyboardManager.swift */; };
-		F8E8912F2E396E4300A1DC65 /* Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E8912E2E396E4300A1DC65 /* Keyboard.swift */; };
-		F8E891332E3ACB8100A1DC65 /* LayoutDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E891322E3ACB8100A1DC65 /* LayoutDetector.swift */; };
-		AA00000100000001AABB0001 /* ConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000100000001AABB0010 /* ConfigService.swift */; };
-		AA00000100000001AABB0002 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000100000001AABB0020 /* AppViewModel.swift */; };
-		AA00000100000001AABB0003 /* KeyboardListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000100000001AABB0030 /* KeyboardListView.swift */; };
-		AA00000100000001AABB0004 /* LayoutSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000100000001AABB0040 /* LayoutSelectorView.swift */; };
-		AA00000100000001AABB0005 /* PermissionOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000100000001AABB0050 /* PermissionOnboardingView.swift */; };
 		AA00000100000001AABB0006 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E891352E3B523D00A1DC65 /* AppKit.framework */; };
-		BB00000100000001AABB0001 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000100000001AABB0010 /* Theme.swift */; };
-		BB00000100000001AABB0002 /* StatisticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000100000001AABB0020 /* StatisticsService.swift */; };
-		BB00000100000001AABB0003 /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000100000001AABB0030 /* StatisticsView.swift */; };
 		BB00000100000001AABB0201 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BB00000100000001AABB0200 /* libsqlite3.tbd */; };
 /* End PBXBuildFile section */
 
@@ -44,30 +29,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BB00000100000001AABB0200 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		F8E890EA2E376B0B00A1DC65 /* KezboardSwitcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KezboardSwitcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F8E890ED2E376B0B00A1DC65 /* KezboardSwitcherApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KezboardSwitcherApp.swift; sourceTree = "<group>"; };
-		F8E890EF2E376B0B00A1DC65 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		F8E890F32E376B0C00A1DC65 /* KezboardSwitcher.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KezboardSwitcher.entitlements; sourceTree = "<group>"; };
 		F8E890F82E376B0C00A1DC65 /* KezboardSwitcherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KezboardSwitcherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8E891022E376B0C00A1DC65 /* KezboardSwitcherUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KezboardSwitcherUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F8E8911A2E376F0900A1DC65 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		F8E8912A2E37740C00A1DC65 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F8E8912C2E3774F000A1DC65 /* KeyboardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManager.swift; sourceTree = "<group>"; };
-		F8E8912E2E396E4300A1DC65 /* Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard.swift; sourceTree = "<group>"; };
-		F8E891322E3ACB8100A1DC65 /* LayoutDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutDetector.swift; sourceTree = "<group>"; };
 		F8E891352E3B523D00A1DC65 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
-		BB00000100000001AABB0200 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
-		AA00000100000001AABB0010 /* ConfigService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigService.swift; sourceTree = "<group>"; };
-		AA00000100000001AABB0020 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
-		AA00000100000001AABB0030 /* KeyboardListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardListView.swift; sourceTree = "<group>"; };
-		AA00000100000001AABB0040 /* LayoutSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutSelectorView.swift; sourceTree = "<group>"; };
-		AA00000100000001AABB0050 /* PermissionOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionOnboardingView.swift; sourceTree = "<group>"; };
-		BB00000100000001AABB0010 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
-		BB00000100000001AABB0020 /* StatisticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsService.swift; sourceTree = "<group>"; };
-		BB00000100000001AABB0030 /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		CC00000100000001AABB0001 /* KezboardSwitcher */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = KezboardSwitcher;
+			sourceTree = "<group>";
+		};
 		F8E890FB2E376B0C00A1DC65 /* KezboardSwitcherTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = KezboardSwitcherTests;
@@ -110,7 +84,7 @@
 		F8E890E12E376B0B00A1DC65 = {
 			isa = PBXGroup;
 			children = (
-				F8E891222E37717C00A1DC65 /* KezboardSwitcher */,
+				CC00000100000001AABB0001 /* KezboardSwitcher */,
 				F8E890FB2E376B0C00A1DC65 /* KezboardSwitcherTests */,
 				F8E891052E376B0C00A1DC65 /* KezboardSwitcherUITests */,
 				F8E891342E3B523D00A1DC65 /* Frameworks */,
@@ -126,93 +100,6 @@
 				F8E891022E376B0C00A1DC65 /* KezboardSwitcherUITests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		F8E891222E37717C00A1DC65 /* KezboardSwitcher */ = {
-			isa = PBXGroup;
-			children = (
-				F8E891272E37732A00A1DC65 /* Shared */,
-				F8E891242E3772FC00A1DC65 /* Features */,
-				F8E891232E3772E200A1DC65 /* App */,
-				F8E890F32E376B0C00A1DC65 /* KezboardSwitcher.entitlements */,
-				F8E8911A2E376F0900A1DC65 /* Assets.xcassets */,
-			);
-			path = KezboardSwitcher;
-			sourceTree = "<group>";
-		};
-		F8E891232E3772E200A1DC65 /* App */ = {
-			isa = PBXGroup;
-			children = (
-				F8E890ED2E376B0B00A1DC65 /* KezboardSwitcherApp.swift */,
-				F8E8912A2E37740C00A1DC65 /* AppDelegate.swift */,
-			);
-			path = App;
-			sourceTree = "<group>";
-		};
-		F8E891242E3772FC00A1DC65 /* Features */ = {
-			isa = PBXGroup;
-			children = (
-				F8E891262E37731000A1DC65 /* CoreLogic */,
-				F8E891252E37730600A1DC65 /* Configuration */,
-				BB00000100000001AABB0100 /* Statistics */,
-			);
-			path = Features;
-			sourceTree = "<group>";
-		};
-		BB00000100000001AABB0100 /* Statistics */ = {
-			isa = PBXGroup;
-			children = (
-				BB00000100000001AABB0020 /* StatisticsService.swift */,
-				BB00000100000001AABB0110 /* View */,
-			);
-			path = Statistics;
-			sourceTree = "<group>";
-		};
-		BB00000100000001AABB0110 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				BB00000100000001AABB0030 /* StatisticsView.swift */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		F8E891252E37730600A1DC65 /* Configuration */ = {
-			isa = PBXGroup;
-			children = (
-				AA00000100000001AABB0010 /* ConfigService.swift */,
-				AA00000100000001AABB0020 /* AppViewModel.swift */,
-				F8E891292E3773B400A1DC65 /* View */,
-			);
-			path = Configuration;
-			sourceTree = "<group>";
-		};
-		F8E891262E37731000A1DC65 /* CoreLogic */ = {
-			isa = PBXGroup;
-			children = (
-				F8E8912C2E3774F000A1DC65 /* KeyboardManager.swift */,
-				F8E891322E3ACB8100A1DC65 /* LayoutDetector.swift */,
-			);
-			path = CoreLogic;
-			sourceTree = "<group>";
-		};
-		F8E891272E37732A00A1DC65 /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-				F8E8912E2E396E4300A1DC65 /* Keyboard.swift */,
-				BB00000100000001AABB0010 /* Theme.swift */,
-			);
-			path = Shared;
-			sourceTree = "<group>";
-		};
-		F8E891292E3773B400A1DC65 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				F8E890EF2E376B0B00A1DC65 /* ContentView.swift */,
-				AA00000100000001AABB0030 /* KeyboardListView.swift */,
-				AA00000100000001AABB0040 /* LayoutSelectorView.swift */,
-				AA00000100000001AABB0050 /* PermissionOnboardingView.swift */,
-			);
-			path = View;
 			sourceTree = "<group>";
 		};
 		F8E891342E3B523D00A1DC65 /* Frameworks */ = {
@@ -238,6 +125,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CC00000100000001AABB0001 /* KezboardSwitcher */,
 			);
 			name = KezboardSwitcher;
 			packageProductDependencies = (
@@ -300,7 +190,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1640;
-				LastUpgradeCheck = 1640;
+				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					F8E890E92E376B0B00A1DC65 = {
 						CreatedOnToolsVersion = 16.4;
@@ -341,7 +231,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8E8911C2E376F0900A1DC65 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -366,20 +255,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8E8912B2E37740C00A1DC65 /* AppDelegate.swift in Sources */,
-				F8E891332E3ACB8100A1DC65 /* LayoutDetector.swift in Sources */,
-				F8E8912D2E3774F000A1DC65 /* KeyboardManager.swift in Sources */,
-				F8E8912F2E396E4300A1DC65 /* Keyboard.swift in Sources */,
-				F8E890F02E376B0B00A1DC65 /* ContentView.swift in Sources */,
-				AA00000100000001AABB0001 /* ConfigService.swift in Sources */,
-				AA00000100000001AABB0002 /* AppViewModel.swift in Sources */,
-				AA00000100000001AABB0003 /* KeyboardListView.swift in Sources */,
-				AA00000100000001AABB0004 /* LayoutSelectorView.swift in Sources */,
-				AA00000100000001AABB0005 /* PermissionOnboardingView.swift in Sources */,
-				F8E890EE2E376B0B00A1DC65 /* KezboardSwitcherApp.swift in Sources */,
-				BB00000100000001AABB0001 /* Theme.swift in Sources */,
-				BB00000100000001AABB0002 /* StatisticsService.swift in Sources */,
-				BB00000100000001AABB0003 /* StatisticsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -447,6 +322,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = KYHSSJW693;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -472,6 +348,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -511,6 +388,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = KYHSSJW693;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -529,6 +407,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
@@ -543,9 +422,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = KYHSSJW693;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = KezboardSwitcher;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -575,9 +457,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = KYHSSJW693;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = KezboardSwitcher;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -603,6 +488,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = KYHSSJW693;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.5;
@@ -621,6 +507,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = KYHSSJW693;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.5;
@@ -638,6 +525,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = KYHSSJW693;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -654,6 +542,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = KYHSSJW693;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
