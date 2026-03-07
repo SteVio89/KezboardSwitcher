@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum KeyboardStatus: Int, CaseIterable, Codable, Hashable, Equatable {
-    case new = 0
-    case configured = 1
-    case ignored = 2
+enum KeyboardStatus: String, CaseIterable, Codable, Hashable, Equatable {
+    case new
+    case configured
+    case ignored
 
     var displayName: String {
         switch self {
@@ -33,10 +33,6 @@ struct LayoutInfo: Codable, Hashable, Equatable {
         self.layoutName = layoutName
     }
 
-    enum CodingKeys: String, CodingKey {
-        case layoutId
-        case layoutName
-    }
 }
 
 struct Keyboard: Codable, Hashable, Equatable, Identifiable {
@@ -50,12 +46,6 @@ struct Keyboard: Codable, Hashable, Equatable, Identifiable {
         self.name = name
         self.status = status
         self.layoutInfo = layoutInfo
-    }
-
-    enum CodingKeys: String, CodingKey {
-        case name
-        case status
-        case layoutInfo
     }
 }
 

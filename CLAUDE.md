@@ -4,9 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-KezboardSwitcher is a native macOS SwiftUI app that automatically switches keyboard input layouts when the user switches between physical keyboards. It detects keyboard input via IOKit HID and uses Carbon's TIS API to change the active input source.
-
-This is a **rewrite** of an earlier Go/Wails version located at `/Users/stefan/code/go/kezboard_switcher`. The Swift version targets macOS 15.5+ with Swift 5.
+KezboardSwitcher is a native macOS SwiftUI app that automatically switches keyboard input layouts when the user switches between physical keyboards. It detects keyboard input via IOKit HID and uses Carbon's TIS API to change the active input source. Targets macOS 15.5+ with Swift 5.
 
 Bundle ID: `de.stevio.KezboardSwitcher`
 
@@ -35,19 +33,23 @@ xcodebuild test -project KezboardSwitcher.xcodeproj -scheme KezboardSwitcher -on
 
 ### Key Types
 - `Keyboard` — model with name, status (new/configured/ignored), and `LayoutInfo` (layout ID + display name)
-- `KeyboardManager` — owns the IOHIDManager lifecycle, HID callback, keyboard detection, and layout switching
+- `KeyboardManager` — `@MainActor`, owns the IOHIDManager lifecycle, HID callback, and keyboard detection
 - `KeyboardManagerError` — error enum for HID manager failures
 - `AppViewModel` — `@Observable @MainActor` view model; owns KeyboardManager, ConfigService, LayoutDetector
 - `ConfigService` — JSON persistence to `~/.config/KezboardSwitcher/config.json`
-- `LayoutDetector` — enumerates enabled keyboard layouts via TIS API
-- `AppDelegate` — `NSStatusItem` menu bar icon; uses closure from `OpenWindowAction` to open config window
+- `LayoutDetector` — enumerates enabled keyboard layouts and switches layouts via TIS API
+- `AppDelegate` — `@MainActor`, `NSStatusItem` menu bar icon; uses closure from `OpenWindowAction` to open config window
 
 ### Important Details
 - App sandbox is **disabled** (`com.apple.security.app-sandbox = false`) — required for IOKit HID access
 - The HID callback uses `Unmanaged` pointers to bridge between C callbacks and Swift (`passUnretained`/`fromOpaque`)
 - Only keyboards with status `.configured` and a non-empty `layoutId` are used for automatic switching
 - `lastKeyboard` tracks the most recent keyboard to avoid redundant layout switches
-- Layout switching iterates enabled input sources via `TISCreateInputSourceList` and matches by `kTISPropertyInputSourceID`
+- All TIS interaction is centralized in `LayoutDetector` via a shared `enumerateInputSources` helper
+- `TISGetInputSourceProperty` returns `UnsafeMutableRawPointer?` — use `Unmanaged<CFString>.fromOpaque(ref).takeUnretainedValue()` to bridge to String. Do NOT use `as! CFString` (crashes at runtime) or `unsafeBitCast` (unsafe)
+- `TISCreateInputSourceList` follows CF Create Rule — always use `takeRetainedValue()` to avoid memory leaks
+- `@MainActor` class `deinit` is nonisolated — cannot call isolated methods; inline IOKit cleanup directly
+- `KeyboardStatus` uses `String` raw values for stable JSON serialization (config at `~/.config/KezboardSwitcher/config.json`)
 
 ### Project Structure
 ```

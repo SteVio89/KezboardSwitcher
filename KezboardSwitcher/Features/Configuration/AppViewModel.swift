@@ -21,6 +21,7 @@ final class AppViewModel {
     var layouts: [LayoutInfo] = []
     var selectedKeyboard: Keyboard?
     var appState: AppState = .loading
+    var saveFeedback: String?
 
     private(set) var keyboardManager: KeyboardManager?
     private let configService: ConfigService
@@ -32,13 +33,16 @@ final class AppViewModel {
         self.layoutDetector = layoutDetector
     }
 
-    func initialize() {
+    func initialize() async {
         appState = .loading
+        selectedKeyboard = nil
 
-        let configKeyboards = configService.load()
+        let configKeyboards = await Task.detached { [configService] in
+            configService.load()
+        }.value
 
         do {
-            let manager = try KeyboardManager(managedKeyboards: configKeyboards)
+            let manager = try KeyboardManager(managedKeyboards: configKeyboards, layoutDetector: layoutDetector)
             manager.onKeyboardSwitch = { [weak self] keyboard in
                 self?.logger.debug("Switched to keyboard: \(keyboard.name)")
             }
@@ -54,10 +58,9 @@ final class AppViewModel {
             appState = .ready
             logger.debug("Initialized with \(self.keyboards.count) keyboard(s), \(self.layouts.count) layout(s)")
         } catch let error as KeyboardManagerError {
-            if case .openFailed = error {
+            switch error {
+            case .openFailed, .creationFailed:
                 appState = .needsPermission
-            } else {
-                appState = .error(error.localizedDescription)
             }
             logger.error("Failed to initialize: \(error.localizedDescription)")
         } catch {
@@ -97,8 +100,10 @@ final class AppViewModel {
     func saveConfig() {
         do {
             try configService.save(keyboards: keyboards)
+            saveFeedback = "Configuration saved"
             logger.debug("Config saved")
         } catch {
+            saveFeedback = "Failed to save: \(error.localizedDescription)"
             logger.error("Failed to save config: \(error.localizedDescription)")
         }
     }

@@ -33,7 +33,9 @@ struct PermissionOnboardingView: View {
                 .buttonStyle(.borderedProminent)
 
                 Button("Check Again") {
-                    viewModel.initialize()
+                    Task {
+                        await viewModel.initialize()
+                    }
                 }
             }
 

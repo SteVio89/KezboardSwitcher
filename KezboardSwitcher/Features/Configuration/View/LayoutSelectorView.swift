@@ -28,18 +28,20 @@ struct LayoutSelectorView: View {
                         Text("Assign Layout")
                             .font(.headline)
                         List(viewModel.layouts, id: \.layoutId) { layout in
-                            HStack {
-                                Text(layout.layoutName)
-                                Spacer()
-                                if keyboard.layoutInfo.layoutId == layout.layoutId {
-                                    Image(systemName: "checkmark")
-                                        .foregroundStyle(.blue)
-                                }
-                            }
-                            .contentShape(Rectangle())
-                            .onTapGesture {
+                            Button {
                                 viewModel.assignLayout(layout, to: keyboard)
+                            } label: {
+                                HStack {
+                                    Text(layout.layoutName)
+                                    Spacer()
+                                    if keyboard.layoutInfo.layoutId == layout.layoutId {
+                                        Image(systemName: "checkmark")
+                                            .foregroundStyle(.blue)
+                                    }
+                                }
+                                .contentShape(Rectangle())
                             }
+                            .buttonStyle(.plain)
                         }
                         .listStyle(.plain)
                     } else {
@@ -54,6 +56,12 @@ struct LayoutSelectorView: View {
 
                 Divider()
                 HStack {
+                    if let feedback = viewModel.saveFeedback {
+                        Text(feedback)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .transition(.opacity)
+                    }
                     Spacer()
                     Button("Save") {
                         viewModel.saveConfig()

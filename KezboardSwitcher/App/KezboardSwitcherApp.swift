@@ -19,11 +19,10 @@ struct KezboardSwitcherApp: App {
             ContentView()
                 .environment(viewModel)
                 .task {
-                    appDelegate.viewModel = viewModel
                     appDelegate.openConfigWindow = { [openWindow] in
                         openWindow(id: "config")
                     }
-                    viewModel.initialize()
+                    await viewModel.initialize()
                 }
         }
     }

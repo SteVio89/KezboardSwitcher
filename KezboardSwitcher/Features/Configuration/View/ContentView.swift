@@ -36,7 +36,9 @@ struct ContentView: View {
                 Text(message)
                     .foregroundStyle(.secondary)
                 Button("Retry") {
-                    viewModel.initialize()
+                    Task {
+                        await viewModel.initialize()
+                    }
                 }
             }
             .frame(minWidth: 400, minHeight: 300)

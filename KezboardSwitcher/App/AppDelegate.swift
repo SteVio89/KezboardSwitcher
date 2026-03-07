@@ -7,9 +7,9 @@
 
 import AppKit
 
+@MainActor
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
-    weak var viewModel: AppViewModel?
     var openConfigWindow: (() -> Void)?
 
     func applicationDidFinishLaunching(_ notification: Notification) {

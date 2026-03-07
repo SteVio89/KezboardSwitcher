@@ -22,7 +22,7 @@ struct KeyboardCodableTests {
 
     @Test func decodeKeyboardPreservesAllFields() throws {
         let json = """
-        {"name":"TestKB","status":1,"layoutInfo":{"layoutId":"com.apple.keylayout.German","layoutName":"German"}}
+        {"name":"TestKB","status":"configured","layoutInfo":{"layoutId":"com.apple.keylayout.German","layoutName":"German"}}
         """
         let data = json.data(using: .utf8)!
         let keyboard = try JSONDecoder().decode(Keyboard.self, from: data)
@@ -46,9 +46,9 @@ struct KeyboardCodableTests {
     }
 
     @Test func keyboardStatusRawValues() {
-        #expect(KeyboardStatus.new.rawValue == 0)
-        #expect(KeyboardStatus.configured.rawValue == 1)
-        #expect(KeyboardStatus.ignored.rawValue == 2)
+        #expect(KeyboardStatus.new.rawValue == "new")
+        #expect(KeyboardStatus.configured.rawValue == "configured")
+        #expect(KeyboardStatus.ignored.rawValue == "ignored")
     }
 
     @Test func keyboardIdentifiable() {
