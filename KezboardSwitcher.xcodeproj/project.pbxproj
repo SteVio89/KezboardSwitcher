@@ -20,6 +20,10 @@
 		AA00000100000001AABB0004 /* LayoutSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000100000001AABB0040 /* LayoutSelectorView.swift */; };
 		AA00000100000001AABB0005 /* PermissionOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000100000001AABB0050 /* PermissionOnboardingView.swift */; };
 		AA00000100000001AABB0006 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E891352E3B523D00A1DC65 /* AppKit.framework */; };
+		BB00000100000001AABB0001 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000100000001AABB0010 /* Theme.swift */; };
+		BB00000100000001AABB0002 /* StatisticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000100000001AABB0020 /* StatisticsService.swift */; };
+		BB00000100000001AABB0003 /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000100000001AABB0030 /* StatisticsView.swift */; };
+		BB00000100000001AABB0201 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BB00000100000001AABB0200 /* libsqlite3.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,11 +56,15 @@
 		F8E8912E2E396E4300A1DC65 /* Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard.swift; sourceTree = "<group>"; };
 		F8E891322E3ACB8100A1DC65 /* LayoutDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutDetector.swift; sourceTree = "<group>"; };
 		F8E891352E3B523D00A1DC65 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		BB00000100000001AABB0200 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		AA00000100000001AABB0010 /* ConfigService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigService.swift; sourceTree = "<group>"; };
 		AA00000100000001AABB0020 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
 		AA00000100000001AABB0030 /* KeyboardListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardListView.swift; sourceTree = "<group>"; };
 		AA00000100000001AABB0040 /* LayoutSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutSelectorView.swift; sourceTree = "<group>"; };
 		AA00000100000001AABB0050 /* PermissionOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionOnboardingView.swift; sourceTree = "<group>"; };
+		BB00000100000001AABB0010 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		BB00000100000001AABB0020 /* StatisticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsService.swift; sourceTree = "<group>"; };
+		BB00000100000001AABB0030 /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -78,6 +86,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA00000100000001AABB0006 /* AppKit.framework in Frameworks */,
+				BB00000100000001AABB0201 /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,8 +154,26 @@
 			children = (
 				F8E891262E37731000A1DC65 /* CoreLogic */,
 				F8E891252E37730600A1DC65 /* Configuration */,
+				BB00000100000001AABB0100 /* Statistics */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		BB00000100000001AABB0100 /* Statistics */ = {
+			isa = PBXGroup;
+			children = (
+				BB00000100000001AABB0020 /* StatisticsService.swift */,
+				BB00000100000001AABB0110 /* View */,
+			);
+			path = Statistics;
+			sourceTree = "<group>";
+		};
+		BB00000100000001AABB0110 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				BB00000100000001AABB0030 /* StatisticsView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		F8E891252E37730600A1DC65 /* Configuration */ = {
@@ -172,6 +199,7 @@
 			isa = PBXGroup;
 			children = (
 				F8E8912E2E396E4300A1DC65 /* Keyboard.swift */,
+				BB00000100000001AABB0010 /* Theme.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -191,6 +219,7 @@
 			isa = PBXGroup;
 			children = (
 				F8E891352E3B523D00A1DC65 /* AppKit.framework */,
+				BB00000100000001AABB0200 /* libsqlite3.tbd */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -348,6 +377,9 @@
 				AA00000100000001AABB0004 /* LayoutSelectorView.swift in Sources */,
 				AA00000100000001AABB0005 /* PermissionOnboardingView.swift in Sources */,
 				F8E890EE2E376B0B00A1DC65 /* KezboardSwitcherApp.swift in Sources */,
+				BB00000100000001AABB0001 /* Theme.swift in Sources */,
+				BB00000100000001AABB0002 /* StatisticsService.swift in Sources */,
+				BB00000100000001AABB0003 /* StatisticsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

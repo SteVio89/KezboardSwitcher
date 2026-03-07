@@ -15,6 +15,11 @@ enum AppState: Equatable {
     case error(String)
 }
 
+enum DetailTab: Hashable {
+    case configuration
+    case statistics
+}
+
 @Observable @MainActor
 final class AppViewModel {
     var keyboards: [Keyboard] = []
@@ -22,15 +27,28 @@ final class AppViewModel {
     var selectedKeyboard: Keyboard?
     var appState: AppState = .loading
     var saveFeedback: String?
+    var selectedTab: DetailTab = .configuration
+
+    // Statistics
+    var switchCountToday: Int = 0
+    var totalSwitchCount: Int = 0
+    var keyboardUsages: [KeyboardUsage] = []
+    var dailySwitchCounts: [DailySwitchCount] = []
 
     private(set) var keyboardManager: KeyboardManager?
     private let configService: ConfigService
     private let layoutDetector: LayoutDetector
+    private let statisticsService: StatisticsService
     private let logger = Logger(subsystem: "de.stevio.KezboardSwitcher", category: "AppViewModel")
 
-    init(configService: ConfigService = ConfigService(), layoutDetector: LayoutDetector = LayoutDetector()) {
+    init(
+        configService: ConfigService = ConfigService(),
+        layoutDetector: LayoutDetector = LayoutDetector(),
+        statisticsService: StatisticsService = StatisticsService()
+    ) {
         self.configService = configService
         self.layoutDetector = layoutDetector
+        self.statisticsService = statisticsService
     }
 
     func initialize() async {
@@ -45,6 +63,7 @@ final class AppViewModel {
             let manager = try KeyboardManager(managedKeyboards: configKeyboards, layoutDetector: layoutDetector)
             manager.onKeyboardSwitch = { [weak self] keyboard in
                 self?.logger.debug("Switched to keyboard: \(keyboard.name)")
+                self?.recordSwitch(keyboard)
             }
             self.keyboardManager = manager
 
@@ -54,6 +73,8 @@ final class AppViewModel {
             layouts = layoutDetector.getAvailableLayouts()
 
             manager.setManagedKeyboards(keyboards)
+
+            refreshStatistics()
 
             appState = .ready
             logger.debug("Initialized with \(self.keyboards.count) keyboard(s), \(self.layouts.count) layout(s)")
@@ -112,5 +133,23 @@ final class AppViewModel {
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent") {
             NSWorkspace.shared.open(url)
         }
+    }
+
+    // MARK: - Statistics
+
+    private func recordSwitch(_ keyboard: Keyboard) {
+        statisticsService.recordSwitch(
+            keyboardName: keyboard.name,
+            layoutId: keyboard.layoutInfo.layoutId,
+            layoutName: keyboard.layoutInfo.layoutName
+        )
+        refreshStatistics()
+    }
+
+    func refreshStatistics() {
+        switchCountToday = statisticsService.switchCountToday()
+        totalSwitchCount = statisticsService.totalSwitchCount()
+        keyboardUsages = statisticsService.keyboardUsage()
+        dailySwitchCounts = statisticsService.dailySwitchCounts()
     }
 }

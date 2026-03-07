@@ -22,10 +22,10 @@ struct ContentView: View {
                 KeyboardListView()
                     .frame(minWidth: 200, idealWidth: 220)
                 Divider()
-                LayoutSelectorView()
-                    .frame(minWidth: 250, idealWidth: 300)
+                DetailPanel()
+                    .frame(minWidth: 300, idealWidth: 360)
             }
-            .frame(minWidth: 500, minHeight: 350)
+            .frame(minWidth: 560, minHeight: 400)
         case .error(let message):
             VStack(spacing: 16) {
                 Image(systemName: "exclamationmark.triangle")
@@ -42,6 +42,41 @@ struct ContentView: View {
                 }
             }
             .frame(minWidth: 400, minHeight: 300)
+        }
+    }
+}
+
+// MARK: - Detail Panel with Tab Picker
+
+private struct DetailPanel: View {
+    @Environment(AppViewModel.self) private var viewModel
+
+    var body: some View {
+        @Bindable var viewModel = viewModel
+        VStack(spacing: 0) {
+            Picker("", selection: $viewModel.selectedTab) {
+                Label("Configuration", systemImage: "keyboard")
+                    .tag(DetailTab.configuration)
+                Label("Statistics", systemImage: "chart.bar.fill")
+                    .tag(DetailTab.statistics)
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .padding(.horizontal, 16)
+            .padding(.top, 12)
+            .padding(.bottom, 8)
+
+            Divider()
+
+            switch viewModel.selectedTab {
+            case .configuration:
+                LayoutSelectorView()
+            case .statistics:
+                StatisticsView()
+                    .onAppear {
+                        viewModel.refreshStatistics()
+                    }
+            }
         }
     }
 }
