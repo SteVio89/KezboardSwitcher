@@ -11,7 +11,6 @@
 <p align="center">
   <img src="https://img.shields.io/badge/platform-macOS%2015.5%2B-blue" alt="macOS 15.5+">
   <img src="https://img.shields.io/badge/swift-5-orange" alt="Swift 5">
-  <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
 </p>
 
 ---
@@ -113,4 +112,6 @@ xcodebuild test -project KezboardSwitcher.xcodeproj -scheme KezboardSwitcher -on
 
 ## License
 
-MIT
+Copyright (c) 2026 Stefan Viol. All rights reserved.
+
+This is proprietary software. Unauthorized copying, distribution, or modification is strictly prohibited.
