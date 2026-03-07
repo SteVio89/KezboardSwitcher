@@ -14,6 +14,12 @@
 		F8E8912D2E3774F000A1DC65 /* KeyboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E8912C2E3774F000A1DC65 /* KeyboardManager.swift */; };
 		F8E8912F2E396E4300A1DC65 /* Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E8912E2E396E4300A1DC65 /* Keyboard.swift */; };
 		F8E891332E3ACB8100A1DC65 /* LayoutDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E891322E3ACB8100A1DC65 /* LayoutDetector.swift */; };
+		AA00000100000001AABB0001 /* ConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000100000001AABB0010 /* ConfigService.swift */; };
+		AA00000100000001AABB0002 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000100000001AABB0020 /* AppViewModel.swift */; };
+		AA00000100000001AABB0003 /* KeyboardListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000100000001AABB0030 /* KeyboardListView.swift */; };
+		AA00000100000001AABB0004 /* LayoutSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000100000001AABB0040 /* LayoutSelectorView.swift */; };
+		AA00000100000001AABB0005 /* PermissionOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000100000001AABB0050 /* PermissionOnboardingView.swift */; };
+		AA00000100000001AABB0006 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E891352E3B523D00A1DC65 /* AppKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +52,11 @@
 		F8E8912E2E396E4300A1DC65 /* Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard.swift; sourceTree = "<group>"; };
 		F8E891322E3ACB8100A1DC65 /* LayoutDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutDetector.swift; sourceTree = "<group>"; };
 		F8E891352E3B523D00A1DC65 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		AA00000100000001AABB0010 /* ConfigService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigService.swift; sourceTree = "<group>"; };
+		AA00000100000001AABB0020 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
+		AA00000100000001AABB0030 /* KeyboardListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardListView.swift; sourceTree = "<group>"; };
+		AA00000100000001AABB0040 /* LayoutSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutSelectorView.swift; sourceTree = "<group>"; };
+		AA00000100000001AABB0050 /* PermissionOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionOnboardingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -66,6 +77,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA00000100000001AABB0006 /* AppKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,6 +152,8 @@
 		F8E891252E37730600A1DC65 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
+				AA00000100000001AABB0010 /* ConfigService.swift */,
+				AA00000100000001AABB0020 /* AppViewModel.swift */,
 				F8E891292E3773B400A1DC65 /* View */,
 			);
 			path = Configuration;
@@ -166,6 +180,9 @@
 			isa = PBXGroup;
 			children = (
 				F8E890EF2E376B0B00A1DC65 /* ContentView.swift */,
+				AA00000100000001AABB0030 /* KeyboardListView.swift */,
+				AA00000100000001AABB0040 /* LayoutSelectorView.swift */,
+				AA00000100000001AABB0050 /* PermissionOnboardingView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -325,6 +342,11 @@
 				F8E8912D2E3774F000A1DC65 /* KeyboardManager.swift in Sources */,
 				F8E8912F2E396E4300A1DC65 /* Keyboard.swift in Sources */,
 				F8E890F02E376B0B00A1DC65 /* ContentView.swift in Sources */,
+				AA00000100000001AABB0001 /* ConfigService.swift in Sources */,
+				AA00000100000001AABB0002 /* AppViewModel.swift in Sources */,
+				AA00000100000001AABB0003 /* KeyboardListView.swift in Sources */,
+				AA00000100000001AABB0004 /* LayoutSelectorView.swift in Sources */,
+				AA00000100000001AABB0005 /* PermissionOnboardingView.swift in Sources */,
 				F8E890EE2E376B0B00A1DC65 /* KezboardSwitcherApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -495,12 +517,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = KezboardSwitcher;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.stevio.KezboardSwitcher;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -526,12 +549,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = KezboardSwitcher;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.stevio.KezboardSwitcher;
 				PRODUCT_NAME = "$(TARGET_NAME)";

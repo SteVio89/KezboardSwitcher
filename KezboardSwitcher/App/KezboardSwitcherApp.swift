@@ -8,31 +8,23 @@
 import SwiftUI
 
 @main
-struct KezboardSwitcherApp : App {
+struct KezboardSwitcherApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @State private var viewModel = AppViewModel()
+
+    @Environment(\.openWindow) private var openWindow
+
     var body: some Scene {
-        WindowGroup {
+        Window("KezboardSwitcher", id: "config") {
             ContentView()
-        }
-    }
-}
-/*
-@main
-struct KezboardSwitcherApp {
-    static func main() {
-        do {
-            let keyboardManager = try KeyboardManager()
-            let keyboards = keyboardManager.fetchConnectedKeyboards()
-            print("Found \(keyboards.count) keyboard(s):\n")
-            if keyboards.isEmpty {
-                print("No keyboards detected")
-            } else {
-                keyboards.enumerated().forEach { index, keyboard in print("\(index + 1). \(keyboard.name)")
+                .environment(viewModel)
+                .task {
+                    appDelegate.viewModel = viewModel
+                    appDelegate.openConfigWindow = { [openWindow] in
+                        openWindow(id: "config")
+                    }
+                    viewModel.initialize()
                 }
-            }
-        } catch {
-                print("Error: \(error)")
-                exit(1)
         }
     }
 }
-*/

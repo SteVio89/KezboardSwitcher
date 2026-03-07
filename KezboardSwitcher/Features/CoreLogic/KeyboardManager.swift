@@ -45,6 +45,7 @@ class KeyboardManager {
     private var isOpen: Bool = false
     private var lastKeyboard: Keyboard = Keyboard(name: "", status: .new)
     private var managedKeyboards: [Keyboard]
+    var onKeyboardSwitch: ((Keyboard) -> Void)?
     
     init(managedKeyboards: [Keyboard] = []) throws {
         self.logger = Logger(subsystem: "de.stevio.KezboardSwitcher", category: "KeyboardManager")
@@ -208,6 +209,7 @@ class KeyboardManager {
                 logger.debug("Switching layout to \(keyboard.layoutInfo.layoutName) for keyboard \(keyboardName)")
                 switchToLayout(layoutId: keyboard.layoutInfo.layoutId)
                 lastKeyboard = keyboard
+                onKeyboardSwitch?(keyboard)
                 break
             }
         }
