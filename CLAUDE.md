@@ -11,6 +11,11 @@ Bundle ID: `de.stevio.KezboardSwitcher`
 ## Build & Test
 
 ```bash
+# Justfile commands
+just build              # Build debug
+just test               # Run unit tests
+just reset-license      # Remove license from Keychain (for testing)
+
 # Build
 xcodebuild -project KezboardSwitcher.xcodeproj -scheme KezboardSwitcher -configuration Debug build
 
@@ -40,6 +45,8 @@ xcodebuild test -project KezboardSwitcher.xcodeproj -scheme KezboardSwitcher -on
 - `LayoutDetector` — enumerates enabled keyboard layouts and switches layouts via TIS API
 - `AppDelegate` — `@MainActor`, `NSStatusItem` menu bar icon; uses closure from `OpenWindowAction` to open config window
 - `StatisticsService` — SQLite-backed event store at `~/.config/KezboardSwitcher/stats.db`; records keyboard switch events and provides aggregates
+- `LicenseService` — license activation via stevio_store API, Ed25519 signature verification (CryptoKit), Keychain persistence
+- `LicenseActivationView` — license key input gate shown when `AppState.unlicensed`
 
 ### Important Details
 - App sandbox is **disabled** (`com.apple.security.app-sandbox = false`) — required for IOKit HID access
@@ -61,6 +68,7 @@ KezboardSwitcher/
       View/                     # ContentView, KeyboardListView, LayoutSelectorView, PermissionOnboardingView
     CoreLogic/                  # KeyboardManager, LayoutDetector
     Statistics/                 # StatisticsService, StatisticsView
+    Licensing/                  # LicenseService, LicenseActivationView
   Shared/                       # Keyboard model, LayoutInfo
 Assets/                           # Source SVG icons (AppIcon.svg, MenuBarIcon.svg)
 ```
@@ -70,8 +78,21 @@ Assets/                           # Source SVG icons (AppIcon.svg, MenuBarIcon.s
 - Run unit tests only (avoids flaky UI perf test): `xcodebuild test -project KezboardSwitcher.xcodeproj -scheme KezboardSwitcher -only-testing:KezboardSwitcherTests`
 - `@MainActor` class static pure functions need `nonisolated` to be callable from tests
 
+## Licensing
+- License activation: `POST <baseURL>/api/license/activate` with `{"license_key": "...", "machine_hash": "..."}`
+- Machine hash: SHA-256 of `IOPlatformUUID`, 64-char lowercase hex
+- Server returns `SignedLicense` with Ed25519 signature; stored in macOS Keychain (not file — dotfiles repo safety)
+- Ed25519 public key placeholder at `LicenseService.publicKeyBase64` — **replace before release** with key from `store-cli generate key`
+- DEBUG builds skip Ed25519 signature verification (`#if DEBUG`) — no valid public key needed for development
+- DEBUG base URL: `http://localhost:3000` (frontend proxy); Release: `https://store.stevio.de`
+- Canonical JSON for signature verification must match Go struct field order: `bundle_id`, `license_key`, `machine_hash`, `activated_at` — do NOT use `JSONEncoder` with `.sortedKeys`
+- Server uses `bundle_id` (not `app_id`) as the JSON key in `LicensePayload`
+- `AppState.unlicensed` gates the entire app — `KeyboardManager` never starts without a valid license
+- Reset license for testing: `just reset-license` or `security delete-generic-password -s "de.stevio.KezboardSwitcher.license"`
+
 ## Gotchas
 - Xcode may silently re-enable `ENABLE_APP_SANDBOX = YES` and empty the entitlements file when upgrading the project — always verify sandbox is disabled after Xcode upgrades
 - `NSStatusBarButton.sendAction(on:)` is unreliable for custom click handling — use `NSEvent.addLocalMonitorForEvents` with `event.window == button.window` check instead
 - Config JSON uses `KeyboardStatus` string raw values (`"new"`, `"configured"`, `"ignored"`) — integer values from the old Go version will cause silent decode failures
 - SwiftUI `.task` is cancelled when the view disappears — use an unstructured `Task` for initialization that must survive window close
+- Store API uses `bundle_id` not `app_id` in the signed license payload — the Swift `LicensePayload.CodingKeys` must map to `"bundle_id"`

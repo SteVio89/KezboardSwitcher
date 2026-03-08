@@ -15,6 +15,8 @@ struct ContentView: View {
         case .loading:
             ProgressView("Starting...")
                 .frame(minWidth: 400, minHeight: 300)
+        case .unlicensed:
+            LicenseActivationView()
         case .needsPermission:
             PermissionOnboardingView()
         case .ready:

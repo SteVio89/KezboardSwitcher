@@ -10,6 +10,7 @@ import os.log
 
 enum AppState: Equatable {
     case loading
+    case unlicensed
     case needsPermission
     case ready
     case error(String)
@@ -39,21 +40,38 @@ final class AppViewModel {
     private let configService: ConfigService
     private let layoutDetector: LayoutDetector
     private let statisticsService: StatisticsService
+    private let licenseService: LicenseService
     private let logger = Logger(subsystem: "de.stevio.KezboardSwitcher", category: "AppViewModel")
 
     init(
         configService: ConfigService = ConfigService(),
         layoutDetector: LayoutDetector = LayoutDetector(),
-        statisticsService: StatisticsService = StatisticsService()
+        statisticsService: StatisticsService = StatisticsService(),
+        licenseService: LicenseService = LicenseService()
     ) {
         self.configService = configService
         self.layoutDetector = layoutDetector
         self.statisticsService = statisticsService
+        self.licenseService = licenseService
+    }
+
+    func activateLicense(licenseKey: String) async throws {
+        let trimmed = licenseKey.trimmingCharacters(in: .whitespaces)
+        _ = try await Task.detached { [licenseService] in
+            try await licenseService.activate(licenseKey: trimmed)
+        }.value
+        await initialize()
     }
 
     func initialize() async {
         appState = .loading
         selectedKeyboard = nil
+
+        let storedLicense = licenseService.load()
+        guard storedLicense != nil else {
+            appState = .unlicensed
+            return
+        }
 
         let configKeyboards = await Task.detached { [configService] in
             configService.load()

@@ -17,7 +17,9 @@ struct KezboardSwitcherApp: App {
     init() {
         let configPath = FileManager.default.homeDirectoryForCurrentUser
             .appendingPathComponent(".config/KezboardSwitcher/config.json")
-        appDelegate.isFirstLaunch = !FileManager.default.fileExists(atPath: configPath.path)
+        let isFirstConfig = !FileManager.default.fileExists(atPath: configPath.path)
+        let isUnlicensed = LicenseService().load() == nil
+        appDelegate.isFirstLaunch = isFirstConfig || isUnlicensed
     }
 
     var body: some Scene {
