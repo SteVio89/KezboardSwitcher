@@ -43,5 +43,10 @@ struct PermissionOnboardingView: View {
         }
         .padding()
         .frame(minWidth: 400, minHeight: 300)
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            Task {
+                await viewModel.initialize()
+            }
+        }
     }
 }

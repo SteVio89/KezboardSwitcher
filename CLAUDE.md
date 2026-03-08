@@ -82,8 +82,10 @@ Assets/                           # Source SVG icons (AppIcon.svg, MenuBarIcon.s
 - License activation: `POST <baseURL>/api/license/activate` with `{"license_key": "...", "machine_hash": "..."}`
 - Machine hash: SHA-256 of `IOPlatformUUID`, 64-char lowercase hex
 - Server returns `SignedLicense` with Ed25519 signature; stored in macOS Keychain (not file — dotfiles repo safety)
-- Ed25519 public key placeholder at `LicenseService.publicKeyBase64` — **replace before release** with key from `store-cli generate key`
-- DEBUG builds skip Ed25519 signature verification (`#if DEBUG`) — no valid public key needed for development
+- Public keys are fetched dynamically from `GET /api/sdk/public-keys` during activation — no hardcoded key in the binary
+- `SignedLicense` includes `key_id` identifying which server signing key was used; the app matches it to the fetched key list
+- `StoredLicense` wraps `SignedLicense` + `publicKeyB64` in Keychain for offline re-verification on launch
+- Ed25519 signature verification runs in both DEBUG and Release builds (local store provides real keys)
 - DEBUG base URL: `http://localhost:3000` (frontend proxy); Release: `https://store.stevio.de`
 - Canonical JSON for signature verification must match Go struct field order: `bundle_id`, `license_key`, `machine_hash`, `activated_at` — do NOT use `JSONEncoder` with `.sortedKeys`
 - Server uses `bundle_id` (not `app_id`) as the JSON key in `LicensePayload`

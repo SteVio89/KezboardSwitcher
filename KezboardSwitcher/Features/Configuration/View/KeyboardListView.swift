@@ -14,7 +14,7 @@ struct KeyboardListView: View {
         @Bindable var viewModel = viewModel
         VStack(spacing: 0) {
             // Active keyboard header
-            if let active = viewModel.keyboards.first(where: { $0.name == viewModel.keyboardManager?.lastKeyboardName }) {
+            if let active = viewModel.keyboards.first(where: { $0.name == viewModel.activeKeyboardName }) {
                 ActiveKeyboardHeader(keyboard: active)
                 Divider()
             }
@@ -91,6 +91,7 @@ private struct KeyboardRow: View {
             Circle()
                 .fill(Theme.statusColor(for: keyboard.status))
                 .frame(width: 8, height: 8)
+                .accessibilityLabel(keyboard.status.displayName)
         }
         .padding(.vertical, 2)
     }

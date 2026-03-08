@@ -89,6 +89,7 @@ private struct StatCard: View {
                 Image(systemName: icon)
                     .foregroundStyle(tint)
                     .font(.caption)
+                    .accessibilityLabel(title)
                 Spacer()
             }
             Text(value)
@@ -177,10 +178,14 @@ private struct DailyChart: View {
         return Theme.accentBlue.opacity(0.4).gradient
     }
 
-    private func dayLabel(for date: Date) -> String {
-        if Calendar.current.isDateInToday(date) { return "Today" }
+    private static let dayFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "E"
-        return formatter.string(from: date)
+        return formatter
+    }()
+
+    private func dayLabel(for date: Date) -> String {
+        if Calendar.current.isDateInToday(date) { return "Today" }
+        return Self.dayFormatter.string(from: date)
     }
 }

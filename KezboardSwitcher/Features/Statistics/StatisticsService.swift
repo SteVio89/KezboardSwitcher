@@ -33,6 +33,8 @@ struct DailySwitchCount: Identifiable {
 }
 
 final class StatisticsService: Sendable {
+    private static let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
+
     private let dbPath: String
     private let logger = Logger(subsystem: "de.stevio.KezboardSwitcher", category: "StatisticsService")
 
@@ -80,9 +82,9 @@ final class StatisticsService: Sendable {
             defer { sqlite3_finalize(stmt) }
 
             sqlite3_bind_double(stmt, 1, Date().timeIntervalSince1970)
-            sqlite3_bind_text(stmt, 2, (keyboardName as NSString).utf8String, -1, nil)
-            sqlite3_bind_text(stmt, 3, (layoutId as NSString).utf8String, -1, nil)
-            sqlite3_bind_text(stmt, 4, (layoutName as NSString).utf8String, -1, nil)
+            sqlite3_bind_text(stmt, 2, (keyboardName as NSString).utf8String, -1, Self.SQLITE_TRANSIENT)
+            sqlite3_bind_text(stmt, 3, (layoutId as NSString).utf8String, -1, Self.SQLITE_TRANSIENT)
+            sqlite3_bind_text(stmt, 4, (layoutName as NSString).utf8String, -1, Self.SQLITE_TRANSIENT)
             sqlite3_step(stmt)
         }
     }
@@ -140,8 +142,10 @@ final class StatisticsService: Sendable {
     }
 
     func dailySwitchCounts(days: Int = 7) -> [DailySwitchCount] {
+        guard days > 0 else { return [] }
         let calendar = Calendar.current
-        let startDate = calendar.startOfDay(for: calendar.date(byAdding: .day, value: -(days - 1), to: Date())!)
+        guard let offsetDate = calendar.date(byAdding: .day, value: -(days - 1), to: Date()) else { return [] }
+        let startDate = calendar.startOfDay(for: offsetDate)
 
         var results: [Date: Int] = [:]
         withDB { db in

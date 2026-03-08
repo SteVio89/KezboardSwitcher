@@ -55,6 +55,21 @@ struct LayoutSelectorView: View {
                                 }
                             }
                         }
+                        Divider()
+                        HStack {
+                            if let feedback = viewModel.saveFeedback {
+                                Text(feedback)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .transition(.opacity)
+                            }
+                            Spacer()
+                            Button("Save") {
+                                viewModel.saveConfig()
+                            }
+                            .keyboardShortcut("s")
+                            .padding()
+                        }
                     } else {
                         Spacer()
                         Text("This keyboard is ignored")
@@ -64,22 +79,6 @@ struct LayoutSelectorView: View {
                     }
                 }
                 .padding()
-
-                Divider()
-                HStack {
-                    if let feedback = viewModel.saveFeedback {
-                        Text(feedback)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .transition(.opacity)
-                    }
-                    Spacer()
-                    Button("Save") {
-                        viewModel.saveConfig()
-                    }
-                    .keyboardShortcut("s")
-                    .padding()
-                }
             } else {
                 VStack(spacing: 12) {
                     Spacer()

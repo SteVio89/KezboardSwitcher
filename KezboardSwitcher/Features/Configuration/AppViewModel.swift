@@ -29,6 +29,7 @@ final class AppViewModel {
     var appState: AppState = .loading
     var saveFeedback: String?
     var selectedTab: DetailTab = .configuration
+    var activeKeyboardName: String?
 
     // Statistics
     var switchCountToday: Int = 0
@@ -63,6 +64,15 @@ final class AppViewModel {
         await initialize()
     }
 
+    func deactivateLicense() async throws {
+        try await Task.detached { [licenseService] in
+            try await licenseService.deactivate()
+        }.value
+        keyboardManager = nil
+        keyboards = []
+        appState = .unlicensed
+    }
+
     func initialize() async {
         appState = .loading
         selectedKeyboard = nil
@@ -81,6 +91,7 @@ final class AppViewModel {
             let manager = try KeyboardManager(managedKeyboards: configKeyboards, layoutDetector: layoutDetector)
             manager.onKeyboardSwitch = { [weak self] keyboard in
                 self?.logger.debug("Switched to keyboard: \(keyboard.name)")
+                self?.activeKeyboardName = keyboard.name
                 self?.recordSwitch(keyboard)
             }
             self.keyboardManager = manager
@@ -141,6 +152,12 @@ final class AppViewModel {
             try configService.save(keyboards: keyboards)
             saveFeedback = "Configuration saved"
             logger.debug("Config saved")
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(for: .seconds(3))
+                if self?.saveFeedback == "Configuration saved" {
+                    self?.saveFeedback = nil
+                }
+            }
         } catch {
             saveFeedback = "Failed to save: \(error.localizedDescription)"
             logger.error("Failed to save config: \(error.localizedDescription)")

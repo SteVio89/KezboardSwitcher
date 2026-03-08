@@ -60,7 +60,7 @@ class KeyboardManager {
 
     deinit {
         guard let hidManager = iohidManager else { return }
-        IOHIDManagerUnscheduleFromRunLoop(hidManager, CFRunLoopGetCurrent(), CFRunLoopMode.defaultMode.rawValue)
+        IOHIDManagerUnscheduleFromRunLoop(hidManager, CFRunLoopGetMain(), CFRunLoopMode.defaultMode.rawValue)
         IOHIDManagerClose(hidManager, IOOptionBits(kIOHIDOptionsTypeNone))
     }
 
@@ -70,7 +70,7 @@ class KeyboardManager {
             return
         }
 
-        IOHIDManagerUnscheduleFromRunLoop(hidManager, CFRunLoopGetCurrent(), CFRunLoopMode.defaultMode.rawValue)
+        IOHIDManagerUnscheduleFromRunLoop(hidManager, CFRunLoopGetMain(), CFRunLoopMode.defaultMode.rawValue)
 
         IOHIDManagerClose(hidManager, IOOptionBits(kIOHIDOptionsTypeNone))
 
@@ -106,12 +106,9 @@ class KeyboardManager {
     func setManagedKeyboards(_ keyboards: [Keyboard]) {
         logger.debug("Setting keyboards: \(keyboards)")
 
-        let managedKeyboards = keyboards.filter {
+        self.managedKeyboards = keyboards.filter {
             $0.status == .configured && !$0.layoutInfo.layoutId.isEmpty
         }
-
-        self.lastKeyboard = Keyboard(name: "", status: .new)
-        self.managedKeyboards = managedKeyboards
 
         logger.debug("ManagedKeyboards updated")
     }
@@ -127,7 +124,7 @@ class KeyboardManager {
 
         IOHIDManagerSetDeviceMatching(hidManager, matchingDict)
 
-        IOHIDManagerScheduleWithRunLoop(hidManager, CFRunLoopGetCurrent(), CFRunLoopMode.defaultMode.rawValue)
+        IOHIDManagerScheduleWithRunLoop(hidManager, CFRunLoopGetMain(), CFRunLoopMode.defaultMode.rawValue)
 
         let result = IOHIDManagerOpen(hidManager, IOOptionBits(kIOHIDOptionsTypeNone))
         guard result == kIOReturnSuccess else {
@@ -173,7 +170,7 @@ class KeyboardManager {
         guard CFGetTypeID(keyboardNameRef) == CFStringGetTypeID() else {
             return nil
         }
-        return (keyboardNameRef as! CFString) as String
+        return keyboardNameRef as? String
     }
 
     nonisolated internal func handleHidInputEvent(value: IOHIDValue) {
@@ -185,7 +182,7 @@ class KeyboardManager {
             if intValue == 0 { return }
 
             let device = IOHIDElementGetDevice(element)
-            MainActor.assumeIsolated {
+            Task { @MainActor [self] in
                 detectActiveKeyboard(device: device)
             }
         }
@@ -207,8 +204,11 @@ class KeyboardManager {
                 layoutDetector.switchToLayout(layoutId: keyboard.layoutInfo.layoutId)
                 lastKeyboard = keyboard
                 onKeyboardSwitch?(keyboard)
-                break
+                return
             }
         }
+
+        // Track unmanaged keyboard to avoid repeated lookups on every keypress
+        lastKeyboard = Keyboard(name: keyboardName, status: .new)
     }
 }

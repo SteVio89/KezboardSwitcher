@@ -67,7 +67,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func openConfiguration() {
-        openConfigWindow?()
+        if let openConfigWindow {
+            openConfigWindow()
+        } else {
+            // Fallback: find the existing window by title and bring it forward
+            for window in NSApp.windows where window.title == "KezboardSwitcher" {
+                window.makeKeyAndOrderFront(nil)
+                break
+            }
+        }
         NSApp.activate(ignoringOtherApps: true)
     }
 }

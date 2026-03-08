@@ -25,10 +25,14 @@ struct LicenseActivationView: View {
             Text("Activate License")
                 .font(.title2.bold())
 
-            Text("Enter the license key from your purchase at store.stevio.de to activate KezboardSwitcher.")
-                .multilineTextAlignment(.center)
-                .foregroundStyle(.secondary)
-                .frame(maxWidth: 350)
+            VStack(spacing: 4) {
+                Text("Enter the license key from your purchase to activate KezboardSwitcher.")
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.secondary)
+                Link("Get a license at store.stevio.de", destination: URL(string: "https://store.stevio.de")!)
+                    .font(.callout)
+            }
+            .frame(maxWidth: 350)
 
             VStack(spacing: 12) {
                 TextField("License Key", text: $licenseKey)
