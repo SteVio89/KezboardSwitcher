@@ -38,7 +38,7 @@ class KeyboardManager {
     private let logger: Logger
     private var iohidManager: IOHIDManager?
     private var isOpen: Bool = false
-    private(set) var lastKeyboard: Keyboard = Keyboard(name: "", status: .new)
+    var lastKeyboard: Keyboard = Keyboard(name: "", status: .new)
     var lastKeyboardName: String { lastKeyboard.name }
     private var managedKeyboards: [Keyboard]
     private let layoutDetector: LayoutDetector

@@ -43,6 +43,7 @@ final class AppViewModel {
     private let statisticsService: StatisticsService
     private let licenseService: LicenseService
     private let logger = Logger(subsystem: "de.stevio.KezboardSwitcher", category: "AppViewModel")
+    private static let lastKeyboardKey = "de.stevio.KezboardSwitcher.lastKeyboardName"
 
     init(
         configService: ConfigService = ConfigService(),
@@ -93,8 +94,14 @@ final class AppViewModel {
                 self?.logger.debug("Switched to keyboard: \(keyboard.name)")
                 self?.activeKeyboardName = keyboard.name
                 self?.recordSwitch(keyboard)
+                UserDefaults.standard.set(keyboard.name, forKey: Self.lastKeyboardKey)
             }
             self.keyboardManager = manager
+
+            // Restore persisted last keyboard to avoid false switch count on app restart
+            if let persistedName = UserDefaults.standard.string(forKey: Self.lastKeyboardKey), !persistedName.isEmpty {
+                manager.lastKeyboard = Keyboard(name: persistedName, status: .new)
+            }
 
             let detected = manager.fetchConnectedKeyboards()
             keyboards = Self.merge(config: configKeyboards, detected: detected)
@@ -186,5 +193,10 @@ final class AppViewModel {
         totalSwitchCount = statisticsService.totalSwitchCount()
         keyboardUsages = statisticsService.keyboardUsage()
         dailySwitchCounts = statisticsService.dailySwitchCounts()
+    }
+
+    func resetStatistics() {
+        statisticsService.deleteAll()
+        refreshStatistics()
     }
 }

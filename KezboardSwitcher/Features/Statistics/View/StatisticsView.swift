@@ -9,6 +9,7 @@ import SwiftUI
 
 struct StatisticsView: View {
     @Environment(AppViewModel.self) private var viewModel
+    @State private var showResetConfirmation = false
 
     var body: some View {
         ScrollView {
@@ -69,8 +70,30 @@ struct StatisticsView: View {
                         description: Text("Statistics will appear here as you switch between keyboards.")
                     )
                 }
+
+                if viewModel.totalSwitchCount > 0 {
+                    HStack {
+                        Spacer()
+                        Button(role: .destructive) {
+                            showResetConfirmation = true
+                        } label: {
+                            Label("Reset Statistics", systemImage: "trash")
+                                .font(.caption)
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(.secondary)
+                    }
+                }
             }
             .padding(20)
+        }
+        .alert("Reset Statistics", isPresented: $showResetConfirmation) {
+            Button("Cancel", role: .cancel) {}
+            Button("Reset", role: .destructive) {
+                viewModel.resetStatistics()
+            }
+        } message: {
+            Text("This will permanently delete all switch statistics. This action cannot be undone.")
         }
     }
 }

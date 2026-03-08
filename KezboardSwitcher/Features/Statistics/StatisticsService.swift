@@ -141,6 +141,19 @@ final class StatisticsService: Sendable {
         return results.map { KeyboardUsage(keyboardName: $0.0, switchCount: $0.1, percentage: Double($0.1) / Double(total)) }
     }
 
+    func deleteAll() {
+        withDB { db in
+            let sql = "DELETE FROM switch_events"
+            var errMsg: UnsafeMutablePointer<CChar>?
+            let result = sqlite3_exec(db, sql, nil, nil, &errMsg)
+            if result != SQLITE_OK {
+                let msg = errMsg.map { String(cString: $0) } ?? "unknown"
+                logger.error("Failed to delete statistics: \(msg)")
+                sqlite3_free(errMsg)
+            }
+        }
+    }
+
     func dailySwitchCounts(days: Int = 7) -> [DailySwitchCount] {
         guard days > 0 else { return [] }
         let calendar = Calendar.current
