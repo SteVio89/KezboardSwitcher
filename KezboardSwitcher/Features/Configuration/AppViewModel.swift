@@ -95,6 +95,10 @@ final class AppViewModel {
                 self?.activeKeyboardName = keyboard.name
                 self?.recordSwitch(keyboard)
                 UserDefaults.standard.set(keyboard.name, forKey: Self.lastKeyboardKey)
+                SwitchHUD.shared.show(
+                    keyboardName: keyboard.name,
+                    layoutName: keyboard.layoutInfo.layoutName
+                )
             }
             self.keyboardManager = manager
 
