@@ -10,6 +10,7 @@ import os.log
 
 enum AppState: Equatable {
     case loading
+    case onboarding
     case unlicensed
     case needsPermission
     case ready
@@ -44,6 +45,7 @@ final class AppViewModel {
     private let licenseService: LicenseService
     private let logger = Logger(subsystem: "de.stevio.KezboardSwitcher", category: "AppViewModel")
     private static let lastKeyboardKey = "de.stevio.KezboardSwitcher.lastKeyboardName"
+    static let onboardingCompletedKey = "onboardingCompleted"
 
     init(
         configService: ConfigService = ConfigService(),
@@ -74,9 +76,18 @@ final class AppViewModel {
         appState = .unlicensed
     }
 
+    func completeOnboarding() {
+        UserDefaults.standard.set(true, forKey: Self.onboardingCompletedKey)
+    }
+
     func initialize() async {
         appState = .loading
         selectedKeyboard = nil
+
+        if !UserDefaults.standard.bool(forKey: Self.onboardingCompletedKey) {
+            appState = .onboarding
+            return
+        }
 
         let storedLicense = licenseService.load()
         guard storedLicense != nil else {

@@ -7,39 +7,44 @@
     </linearGradient>
     <!-- Subtle shadow for keys -->
     <filter id="keyShadow" x="-5%" y="-5%" width="110%" height="115%">
-      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#00000033"/>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
+      <feOffset dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.25" result="color"/>
+      <feComposite in="color" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
     </filter>
   </defs>
 
   <!-- Background rounded rect (macOS will mask to squircle) -->
   <rect width="1024" height="1024" rx="224" fill="url(#bg)"/>
 
-  <!-- Z Key (left, slightly tilted) -->
-  <g transform="translate(180, 280) rotate(-8, 150, 150)" filter="url(#keyShadow)">
-    <rect width="300" height="300" rx="48" fill="#FFFFFF" opacity="0.95"/>
-    <rect x="8" y="8" width="284" height="284" rx="40" fill="none" stroke="#E0E0E0" stroke-width="3"/>
-    <text x="150" y="200" text-anchor="middle" font-family="-apple-system, SF Pro Rounded, Helvetica Neue, sans-serif" font-size="180" font-weight="700" fill="#007AFF">Z</text>
+  <!-- Z Key (left, upright like menu bar icon) -->
+  <g filter="url(#keyShadow)">
+    <rect x="148" y="260" width="300" height="300" rx="48" fill="#FFFFFF" opacity="0.95"/>
+    <rect x="156" y="268" width="284" height="284" rx="40" fill="none" stroke="#E0E0E0" stroke-width="3"/>
+    <text x="298" y="420" text-anchor="middle" dominant-baseline="central" font-family="-apple-system, SF Pro Rounded, Helvetica Neue, sans-serif" font-size="200" font-weight="700" fill="#007AFF">Z</text>
   </g>
 
-  <!-- Y Key (right, slightly tilted opposite) -->
-  <g transform="translate(544, 280) rotate(8, 150, 150)" filter="url(#keyShadow)">
-    <rect width="300" height="300" rx="48" fill="#FFFFFF" opacity="0.95"/>
-    <rect x="8" y="8" width="284" height="284" rx="40" fill="none" stroke="#E0E0E0" stroke-width="3"/>
-    <text x="150" y="200" text-anchor="middle" font-family="-apple-system, SF Pro Rounded, Helvetica Neue, sans-serif" font-size="180" font-weight="700" fill="#007AFF">Y</text>
+  <!-- Y Key (right, upright like menu bar icon) -->
+  <g filter="url(#keyShadow)">
+    <rect x="576" y="260" width="300" height="300" rx="48" fill="#FFFFFF" opacity="0.95"/>
+    <rect x="584" y="268" width="284" height="284" rx="40" fill="none" stroke="#E0E0E0" stroke-width="3"/>
+    <text x="726" y="420" text-anchor="middle" dominant-baseline="central" font-family="-apple-system, SF Pro Rounded, Helvetica Neue, sans-serif" font-size="200" font-weight="700" fill="#007AFF">Y</text>
   </g>
 
-  <!-- Swap arrows (curved, between the keys) -->
-  <!-- Top arrow: Z → Y -->
-  <path d="M 420 340 C 480 280, 544 280, 604 340"
-        fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round"/>
-  <polygon points="604,340 580,310 610,318" fill="#FFFFFF"/>
+  <!-- Swap arrows (straight, between the keys — matching menu bar style) -->
+  <!-- Top arrow: Z -> Y -->
+  <line x1="468" y1="350" x2="556" y2="350" stroke="#FFFFFF" stroke-width="22" stroke-linecap="round"/>
+  <polyline points="530,320 562,350 530,380" fill="none" stroke="#FFFFFF" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
 
-  <!-- Bottom arrow: Y → Z -->
-  <path d="M 604 520 C 544 580, 480 580, 420 520"
-        fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round"/>
-  <polygon points="420,520 444,550 414,542" fill="#FFFFFF"/>
+  <!-- Bottom arrow: Y -> Z -->
+  <line x1="556" y1="470" x2="468" y2="470" stroke="#FFFFFF" stroke-width="22" stroke-linecap="round"/>
+  <polyline points="494,440 462,470 494,500" fill="none" stroke="#FFFFFF" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
 
-  <!-- Subtle keyboard base row at bottom -->
+  <!-- Keyboard base row at bottom (matching menu bar style) -->
   <g opacity="0.25">
     <rect x="192" y="680" width="100" height="60" rx="12" fill="#FFFFFF"/>
     <rect x="312" y="680" width="100" height="60" rx="12" fill="#FFFFFF"/>

@@ -7,6 +7,7 @@
 
 import Foundation
 import IOKit.hid
+import IOKit.hidsystem
 import Carbon
 import os.log
 
@@ -111,6 +112,18 @@ class KeyboardManager {
         }
 
         logger.debug("ManagedKeyboards updated")
+    }
+
+    /// Checks if Input Monitoring permission is currently granted.
+    nonisolated static func hasInputMonitoringPermission() -> Bool {
+        IOHIDCheckAccess(kIOHIDRequestTypeListenEvent) == kIOHIDAccessTypeGranted
+    }
+
+    /// Triggers the system permission dialog for Input Monitoring.
+    /// Returns true if access was granted immediately.
+    @discardableResult
+    nonisolated static func requestInputMonitoringPermission() -> Bool {
+        IOHIDRequestAccess(kIOHIDRequestTypeListenEvent)
     }
 
     private func createManager() throws {

@@ -17,6 +17,9 @@ struct ContentView: View {
                 .frame(minWidth: 400, minHeight: 300)
         case .unlicensed:
             LicenseActivationView()
+        case .onboarding:
+            OnboardingWizardView()
+                .frame(minWidth: 560, minHeight: 500)
         case .needsPermission:
             PermissionOnboardingView()
         case .ready:

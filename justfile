@@ -7,5 +7,6 @@ test:
     xcodebuild test -project KezboardSwitcher.xcodeproj -scheme KezboardSwitcher -only-testing:KezboardSwitcherTests
 
 # Remove stored license from Keychain (for testing activation flow)
-reset-license:
+reset:
     security delete-generic-password -s "de.stevio.KezboardSwitcher.license"
+    defaults delete de.stevio.KezboardSwitcher onboardingCompleted

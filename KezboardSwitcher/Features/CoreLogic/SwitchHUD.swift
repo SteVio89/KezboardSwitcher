@@ -96,9 +96,11 @@ private struct SwitchHUDContent: View {
             Text(keyboardName)
                 .font(.system(size: 12))
                 .foregroundStyle(.secondary)
+                .lineLimit(1)
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 16)
+        .frame(minWidth: 200)
         .background {
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .fill(.ultraThinMaterial)
