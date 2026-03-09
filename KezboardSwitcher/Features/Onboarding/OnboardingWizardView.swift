@@ -14,13 +14,6 @@ private enum OnboardingStep: Int, CaseIterable {
     case privacy
     case permission
     case license
-
-    var isBlockingStep: Bool {
-        switch self {
-        case .permission, .license: true
-        default: false
-        }
-    }
 }
 
 // MARK: - Wizard View
@@ -64,6 +57,12 @@ struct OnboardingWizardView: View {
             navigationBar
                 .padding(.horizontal, 32)
                 .padding(.vertical, 16)
+        }
+        .onAppear {
+            if KeyboardManager.hasInputMonitoringPermission() {
+                permissionGranted = true
+                step = .permission
+            }
         }
     }
 
@@ -307,40 +306,49 @@ private struct PermissionStep: View {
                     .foregroundStyle(.green)
                     .font(.callout.bold())
             } else {
-                Text("macOS will ask you to allow Input Monitoring for KezboardSwitcher. Click \"Allow\" to continue.")
+                Text("Click the button below to grant Input Monitoring permission for KezboardSwitcher.")
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: 380)
 
                 Button("Grant Permission") {
-                    requestPermission()
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        KeyboardManager.requestInputMonitoringPermission()
+                    }
                 }
                 .buttonStyle(.borderedProminent)
+
+                Text("If you already granted permission and the app was restarted automatically, quit the app (⌘Q) and reopen it manually.")
+                    .multilineTextAlignment(.center)
+                    .font(.callout)
+                    .foregroundStyle(.orange)
+                    .frame(maxWidth: 400)
+                    .padding(.top, 8)
             }
 
             Spacer()
         }
         .padding(.horizontal, 32)
         .onAppear {
-            // Check if already granted (e.g. from a previous run)
-            if KeyboardManager.hasInputMonitoringPermission() {
-                permissionGranted = true
-            }
+            startPolling()
         }
         .onDisappear {
             pollTask?.cancel()
         }
     }
 
-    private func requestPermission() {
-        KeyboardManager.requestInputMonitoringPermission()
+    private func startPolling() {
+        guard !permissionGranted else { return }
 
-        // The system dialog doesn't trigger any app notification when the
-        // user clicks Allow, so we poll until permission is granted.
+        if KeyboardManager.hasInputMonitoringPermission() {
+            permissionGranted = true
+            return
+        }
+
         pollTask?.cancel()
         pollTask = Task { @MainActor in
-            while !Task.isCancelled {
-                try? await Task.sleep(for: .seconds(1))
+            while !Task.isCancelled, !permissionGranted {
+                try? await Task.sleep(for: .milliseconds(333))
                 if KeyboardManager.hasInputMonitoringPermission() {
                     permissionGranted = true
                     return

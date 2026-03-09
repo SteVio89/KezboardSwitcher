@@ -126,6 +126,28 @@ class KeyboardManager {
         IOHIDRequestAccess(kIOHIDRequestTypeListenEvent)
     }
 
+    /// Ground truth test: actually opens an IOHIDManager to verify permission.
+    /// More reliable than IOHIDCheckAccess after system-initiated restarts.
+    nonisolated static func tryOpenHIDManager() -> Bool {
+        let manager = IOHIDManagerCreate(kCFAllocatorDefault, IOOptionBits(kIOHIDOptionsTypeNone))
+        guard CFGetTypeID(manager) == IOHIDManagerGetTypeID() else { return false }
+
+        let matchingDict: [String: Any] = [
+            kIOHIDDeviceUsagePageKey as String: kHIDPage_GenericDesktop,
+            kIOHIDDeviceUsageKey as String: kHIDUsage_GD_Keyboard
+        ]
+        IOHIDManagerSetDeviceMatching(manager, matchingDict as CFDictionary)
+        IOHIDManagerScheduleWithRunLoop(manager, CFRunLoopGetMain(), CFRunLoopMode.defaultMode.rawValue)
+
+        let result = IOHIDManagerOpen(manager, IOOptionBits(kIOHIDOptionsTypeNone))
+        IOHIDManagerUnscheduleFromRunLoop(manager, CFRunLoopGetMain(), CFRunLoopMode.defaultMode.rawValue)
+        if result == kIOReturnSuccess {
+            IOHIDManagerClose(manager, IOOptionBits(kIOHIDOptionsTypeNone))
+            return true
+        }
+        return false
+    }
+
     private func createManager() throws {
         let hidManager = IOHIDManagerCreate(kCFAllocatorDefault, IOOptionBits(kIOHIDOptionsTypeNone))
         if CFGetTypeID(hidManager) != IOHIDManagerGetTypeID() {

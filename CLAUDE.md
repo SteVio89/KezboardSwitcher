@@ -33,7 +33,7 @@ xcodebuild test -project KezboardSwitcher.xcodeproj -scheme KezboardSwitcher -on
 2. A global C-style callback (`globalHidInputCallback`) receives HID input events and forwards them to `KeyboardManager.handleHidInputEvent`
 3. On keypress (usage page `0x07`), `detectActiveKeyboard` checks if the source keyboard changed and switches the macOS input layout via `TISSelectInputSource`
 4. `AppViewModel` (`@Observable @MainActor`) manages app state, merges config/detected keyboards, and owns `KeyboardManager`
-5. The SwiftUI UI routes on `AppState` (loading/needsPermission/ready/error) with keyboard list + layout selector
+5. The SwiftUI UI routes on `AppState` (loading/onboarding/needsPermission/unlicensed/ready/error); both `.onboarding` and `.needsPermission` show `OnboardingWizardView`
 6. App runs as menu bar only (`LSUIElement = true`); `AppDelegate` manages `NSStatusItem` with left-click (open window) and right-click (context menu) via `NSEvent.addLocalMonitorForEvents`
 
 ### Key Types
@@ -47,6 +47,7 @@ xcodebuild test -project KezboardSwitcher.xcodeproj -scheme KezboardSwitcher -on
 - `StatisticsService` — SQLite-backed event store at `~/.config/KezboardSwitcher/stats.db`; records keyboard switch events and provides aggregates
 - `LicenseService` — license activation via stevio_store API, Ed25519 signature verification (CryptoKit), Keychain persistence
 - `LicenseActivationView` — license key input gate shown when `AppState.unlicensed`
+- `OnboardingWizardView` — 4-step first-run wizard (Welcome → Privacy → Permission → License); shown for both `.onboarding` and `.needsPermission` states
 
 ### Important Details
 - App sandbox is **disabled** (`com.apple.security.app-sandbox = false`) — required for IOKit HID access
@@ -65,7 +66,8 @@ KezboardSwitcher/
   App/                          # App entry point and delegate
   Features/
     Configuration/              # ConfigService, AppViewModel
-      View/                     # ContentView, KeyboardListView, LayoutSelectorView, PermissionOnboardingView
+      View/                     # ContentView, KeyboardListView, LayoutSelectorView
+    Onboarding/                 # OnboardingWizardView (first-run wizard)
     CoreLogic/                  # KeyboardManager, LayoutDetector
     Statistics/                 # StatisticsService, StatisticsView
     Licensing/                  # LicenseService, LicenseActivationView
@@ -98,3 +100,6 @@ Assets/                           # Source SVG icons (AppIcon.svg, MenuBarIcon.s
 - Config JSON uses `KeyboardStatus` string raw values (`"new"`, `"configured"`, `"ignored"`) — integer values from the old Go version will cause silent decode failures
 - SwiftUI `.task` is cancelled when the view disappears — use an unstructured `Task` for initialization that must survive window close
 - Store API uses `bundle_id` not `app_id` in the signed license payload — the Swift `LicensePayload.CodingKeys` must map to `"bundle_id"`
+- When granting TCC Input Monitoring permission, macOS auto-restarts the app — but it launches the **installed `/Applications` copy**, not the Xcode debug build. Delete any installed copy before testing permission flows
+- `IOHIDCheckAccess` works correctly after auto-restart when it's the same build — use it for passive polling, never `IOHIDManagerOpen`
+- `IOHIDRequestAccess` must be dispatched off main thread (can block); only triggers the system dialog once per app lifetime

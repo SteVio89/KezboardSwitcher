@@ -6,7 +6,9 @@ build:
 test:
     xcodebuild test -project KezboardSwitcher.xcodeproj -scheme KezboardSwitcher -only-testing:KezboardSwitcherTests
 
-# Remove stored license from Keychain (for testing activation flow)
+# Remove stored license and onboarding state (for testing full flow from scratch)
 reset:
-    security delete-generic-password -s "de.stevio.KezboardSwitcher.license"
-    defaults delete de.stevio.KezboardSwitcher onboardingCompleted
+    -security delete-generic-password -s "de.stevio.KezboardSwitcher.license"
+    -defaults delete ~/Library/Preferences/de.stevio.KezboardSwitcher.plist onboardingCompleted
+    -defaults delete ~/Library/Preferences/de.stevio.KezboardSwitcher.plist "de.stevio.KezboardSwitcher.onboardingCompleted"
+    @echo "Reset complete. Run 'tccutil reset ListenEvent de.stevio.KezboardSwitcher' to also reset Input Monitoring permission."

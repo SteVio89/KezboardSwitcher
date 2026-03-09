@@ -17,11 +17,9 @@ struct ContentView: View {
                 .frame(minWidth: 400, minHeight: 300)
         case .unlicensed:
             LicenseActivationView()
-        case .onboarding:
+        case .onboarding, .needsPermission:
             OnboardingWizardView()
                 .frame(minWidth: 560, minHeight: 500)
-        case .needsPermission:
-            PermissionOnboardingView()
         case .ready:
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
