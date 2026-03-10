@@ -55,7 +55,7 @@ enum LicenseError: Error, LocalizedError {
   case appIdMismatch
   case machineHashMismatch
   case machineHashUnavailable
-  case keychainWriteFailed
+  case saveFailed
   case appUpdateRequired
   case noStoredLicense
   case deactivationFailed
@@ -74,7 +74,7 @@ enum LicenseError: Error, LocalizedError {
       return "This license is not valid for this app or machine."
     case .machineHashUnavailable:
       return "Could not determine machine identity."
-    case .keychainWriteFailed:
+    case .saveFailed:
       return "Failed to store the license. Please try again."
     case .appUpdateRequired:
       return
@@ -103,8 +103,12 @@ struct LicenseService {
   /// After server-side key rotation, a new binary with the updated key must be shipped.
   private static let pinnedPublicKeyB64 = "icObTxuCxooYN4yu3JtHifK1c0XYXKMNKtJmsbESugM="
 
-  private static let keychainService = "de.stevio.KezboardSwitcher.license"
-  private static let keychainAccount = "signed-license"
+
+  private static var licenseFileURL: URL {
+    FileManager.default
+      .homeDirectoryForCurrentUser
+      .appendingPathComponent("Library/Application Support/KezboardSwitcher/license.json")
+  }
 
   private let logger = Logger(subsystem: "de.stevio.KezboardSwitcher", category: "LicenseService")
 
@@ -203,7 +207,7 @@ struct LicenseService {
       throw LicenseError.deactivationFailed
     }
 
-    deleteFromKeychain()
+    deleteLicenseFile()
     logger.info("License deactivated successfully")
   }
 
@@ -278,17 +282,10 @@ struct LicenseService {
       .replacingOccurrences(of: "\"", with: "\\\"")
   }
 
-  // MARK: - Keychain Persistence
+  // MARK: - File Persistence
 
-  /// Cheap check: returns true if a license entry exists in the Keychain without performing verification.
   func hasStoredLicense() -> Bool {
-    let query: [String: Any] = [
-      kSecClass as String: kSecClassGenericPassword,
-      kSecAttrService as String: Self.keychainService,
-      kSecAttrAccount as String: Self.keychainAccount,
-      kSecReturnData as String: false,
-    ]
-    return SecItemCopyMatching(query as CFDictionary, nil) == errSecSuccess
+    FileManager.default.fileExists(atPath: Self.licenseFileURL.path)
   }
 
   func load() -> SignedLicense? {
@@ -301,7 +298,7 @@ struct LicenseService {
       try verify(stored.signedLicense, publicKeyB64: stored.publicKeyB64)
     } catch {
       logger.info("Stored license failed verification: \(error). Treating as unlicensed.")
-      deleteFromKeychain()
+      deleteLicenseFile()
       return nil
     }
 
@@ -309,62 +306,22 @@ struct LicenseService {
   }
 
   func save(_ storedLicense: StoredLicense) throws {
+    let url = Self.licenseFileURL
+    let dir = url.deletingLastPathComponent()
+    try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
     let data = try JSONEncoder().encode(storedLicense)
-
-    let query: [String: Any] = [
-      kSecClass as String: kSecClassGenericPassword,
-      kSecAttrService as String: Self.keychainService,
-      kSecAttrAccount as String: Self.keychainAccount,
-    ]
-
-    let attrs: [String: Any] = [
-      kSecValueData as String: data,
-      kSecAttrSynchronizable as String: false,
-      kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly,
-    ]
-
-    let status = SecItemCopyMatching(query as CFDictionary, nil)
-    if status == errSecSuccess {
-      let updateStatus = SecItemUpdate(query as CFDictionary, attrs as CFDictionary)
-      guard updateStatus == errSecSuccess else {
-        logger.error("Keychain update failed: \(updateStatus)")
-        throw LicenseError.keychainWriteFailed
-      }
-    } else {
-      var addAttrs = query
-      addAttrs.merge(attrs) { _, new in new }
-      let addStatus = SecItemAdd(addAttrs as CFDictionary, nil)
-      guard addStatus == errSecSuccess else {
-        logger.error("Keychain add failed: \(addStatus)")
-        throw LicenseError.keychainWriteFailed
-      }
-    }
+    try data.write(to: url, options: [.atomic, .completeFileProtection])
   }
 
   private func loadStoredLicense() -> StoredLicense? {
-    let query: [String: Any] = [
-      kSecClass as String: kSecClassGenericPassword,
-      kSecAttrService as String: Self.keychainService,
-      kSecAttrAccount as String: Self.keychainAccount,
-      kSecReturnData as String: true,
-      kSecMatchLimit as String: kSecMatchLimitOne,
-    ]
-
-    var ref: AnyObject?
-    let status = SecItemCopyMatching(query as CFDictionary, &ref)
-
-    guard status == errSecSuccess, let data = ref as? Data else { return nil }
+    guard let data = try? Data(contentsOf: Self.licenseFileURL) else { return nil }
     return try? JSONDecoder().decode(StoredLicense.self, from: data)
   }
 
-  private func deleteFromKeychain() {
-    let query: [String: Any] = [
-      kSecClass as String: kSecClassGenericPassword,
-      kSecAttrService as String: Self.keychainService,
-      kSecAttrAccount as String: Self.keychainAccount,
-    ]
-    SecItemDelete(query as CFDictionary)
+  private func deleteLicenseFile() {
+    try? FileManager.default.removeItem(at: Self.licenseFileURL)
   }
+
 }
 
 // MARK: - Server Error Response

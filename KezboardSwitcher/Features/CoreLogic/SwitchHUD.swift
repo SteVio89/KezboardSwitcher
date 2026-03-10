@@ -24,7 +24,6 @@ final class SwitchHUD {
             layoutName: layoutName,
             keyboardName: keyboardName
         ))
-        hostingView.setFrameSize(hostingView.fittingSize)
 
         let panel = self.panel ?? createPanel()
         self.panel = panel

@@ -126,7 +126,7 @@ final class AppViewModel {
             let detected = manager.fetchConnectedKeyboards()
             keyboards = Self.merge(config: configKeyboards, detected: detected)
 
-            layouts = layoutDetector.getAvailableLayouts()
+            layouts = layoutDetector.getAllLayouts()
 
             manager.setManagedKeyboards(keyboards)
 
@@ -212,6 +212,14 @@ final class AppViewModel {
             result.append(keyboard)
         }
         return result
+    }
+
+    func enableLayout(_ layout: LayoutInfo) {
+        layoutDetector.enableLayout(layoutId: layout.layoutId)
+        // Patch in-place to avoid race with TIS state propagation
+        if let index = layouts.firstIndex(where: { $0.layoutId == layout.layoutId }) {
+            layouts[index].isEnabled = true
+        }
     }
 
     func assignLayout(_ layout: LayoutInfo, to keyboard: Keyboard) {

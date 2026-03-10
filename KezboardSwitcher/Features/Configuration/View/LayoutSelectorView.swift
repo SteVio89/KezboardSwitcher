@@ -10,6 +10,20 @@ import SwiftUI
 struct LayoutSelectorView: View {
     @Environment(AppViewModel.self) private var viewModel
     @State private var showRemoveConfirmation = false
+    @State private var layoutPendingEnable: LayoutInfo?
+
+    private var enabledLayouts: [LayoutInfo] {
+        viewModel.layouts.filter(\.isEnabled)
+    }
+
+    private var installableLayouts: [LayoutInfo] {
+        viewModel.layouts.filter { !$0.isEnabled }
+    }
+
+    private let columns = [
+        GridItem(.flexible(), spacing: 8),
+        GridItem(.flexible(), spacing: 8)
+    ]
 
     var body: some View {
         VStack {
@@ -48,16 +62,35 @@ struct LayoutSelectorView: View {
                             .font(.headline)
 
                         ScrollView {
-                            LazyVGrid(columns: [
-                                GridItem(.flexible(), spacing: 8),
-                                GridItem(.flexible(), spacing: 8)
-                            ], spacing: 8) {
-                                ForEach(viewModel.layouts, id: \.layoutId) { layout in
-                                    LayoutCard(
-                                        layout: layout,
-                                        isSelected: keyboard.layoutInfo.layoutId == layout.layoutId
-                                    ) {
-                                        viewModel.assignLayout(layout, to: keyboard)
+                            VStack(alignment: .leading, spacing: 16) {
+                                LazyVGrid(columns: columns, spacing: 8) {
+                                    ForEach(enabledLayouts, id: \.layoutId) { layout in
+                                        LayoutCard(
+                                            layout: layout,
+                                            isSelected: keyboard.layoutInfo.layoutId == layout.layoutId,
+                                            isInstallable: false
+                                        ) {
+                                            viewModel.assignLayout(layout, to: keyboard)
+                                        }
+                                    }
+                                }
+
+                                if !installableLayouts.isEmpty {
+                                    Text("Available Layouts")
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                        .padding(.top, 4)
+
+                                    LazyVGrid(columns: columns, spacing: 8) {
+                                        ForEach(installableLayouts, id: \.layoutId) { layout in
+                                            LayoutCard(
+                                                layout: layout,
+                                                isSelected: false,
+                                                isInstallable: true
+                                            ) {
+                                                layoutPendingEnable = layout
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -109,6 +142,21 @@ struct LayoutSelectorView: View {
         } message: {
             Text("Remove \"\(viewModel.selectedKeyboard?.name ?? "")\" from configuration? It will reappear as a new keyboard if still connected.")
         }
+        .alert("Add Layout?", isPresented: Binding(
+            get: { layoutPendingEnable != nil },
+            set: { if !$0 { layoutPendingEnable = nil } }
+        )) {
+            Button("Cancel", role: .cancel) { layoutPendingEnable = nil }
+            Button("Add") {
+                if let layout = layoutPendingEnable, let keyboard = viewModel.selectedKeyboard {
+                    viewModel.enableLayout(layout)
+                    viewModel.assignLayout(layout, to: keyboard)
+                    layoutPendingEnable = nil
+                }
+            }
+        } message: {
+            Text("\"\(layoutPendingEnable?.layoutName ?? "")\" will be added to your system input sources. Continue?")
+        }
     }
 }
 
@@ -117,6 +165,7 @@ struct LayoutSelectorView: View {
 private struct LayoutCard: View {
     let layout: LayoutInfo
     let isSelected: Bool
+    let isInstallable: Bool
     let action: () -> Void
 
     var body: some View {
@@ -129,6 +178,10 @@ private struct LayoutCard: View {
                 if isSelected {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(Theme.accentBlue)
+                        .font(.callout)
+                } else if isInstallable {
+                    Image(systemName: "plus.circle")
+                        .foregroundStyle(.secondary)
                         .font(.callout)
                 }
             }
