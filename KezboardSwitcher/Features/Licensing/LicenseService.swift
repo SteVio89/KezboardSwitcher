@@ -101,7 +101,7 @@ struct LicenseService {
 
   /// Pinned Ed25519 public key for license signature verification.
   /// After server-side key rotation, a new binary with the updated key must be shipped.
-  private static let pinnedPublicKeyB64 = "MySP2PERRvAmkPjqfU2cZen6wCxgG+YtiA+gO+B2X1E="
+  private static let pinnedPublicKeyB64 = "icObTxuCxooYN4yu3JtHifK1c0XYXKMNKtJmsbESugM="
 
   private static let keychainService = "de.stevio.KezboardSwitcher.license"
   private static let keychainAccount = "signed-license"

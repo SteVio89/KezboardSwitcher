@@ -29,18 +29,45 @@ struct LayoutDetector {
         return layouts.sorted { $0.layoutName.localizedCaseInsensitiveCompare($1.layoutName) == .orderedAscending }
     }
 
+    func currentLayoutId() -> String? {
+        guard let source = TISCopyCurrentKeyboardInputSource()?.takeRetainedValue(),
+              let idRef = TISGetInputSourceProperty(source, kTISPropertyInputSourceID) else {
+            return nil
+        }
+        return Unmanaged<CFString>.fromOpaque(idRef).takeUnretainedValue() as String
+    }
+
     func switchToLayout(layoutId: String) {
+        var found = false
         enumerateInputSources { inputSource in
             guard let idRef = TISGetInputSourceProperty(inputSource, kTISPropertyInputSourceID) else {
                 return true
             }
             let currentLayoutId = Unmanaged<CFString>.fromOpaque(idRef).takeUnretainedValue() as String
             if currentLayoutId == layoutId {
-                TISSelectInputSource(inputSource)
-                logger.debug("Successfully switched to layout \(layoutId)")
+                found = true
+
+                let isSelectable = TISGetInputSourceProperty(inputSource, kTISPropertyInputSourceIsSelectCapable)
+                    .map { Unmanaged<CFBoolean>.fromOpaque($0).takeUnretainedValue() == kCFBooleanTrue }
+                    ?? false
+
+                if !isSelectable {
+                    logger.error("Input source \(layoutId) is not selectable")
+                    return false
+                }
+
+                let status = TISSelectInputSource(inputSource)
+                if status == noErr {
+                    logger.debug("Switched to layout \(layoutId)")
+                } else {
+                    logger.error("TISSelectInputSource failed with status \(status) for \(layoutId)")
+                }
                 return false
             }
             return true
+        }
+        if !found {
+            logger.error("Layout \(layoutId) not found in enabled input sources")
         }
     }
 

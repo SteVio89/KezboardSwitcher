@@ -135,6 +135,8 @@ private struct DetailPanel: View {
                     .tag(DetailTab.configuration)
                 Label("Statistics", systemImage: "chart.bar.fill")
                     .tag(DetailTab.statistics)
+                Label("Troubleshoot", systemImage: "wrench.and.screwdriver")
+                    .tag(DetailTab.troubleshoot)
             }
             .pickerStyle(.segmented)
             .labelsHidden()
@@ -152,6 +154,8 @@ private struct DetailPanel: View {
                     .onAppear {
                         viewModel.refreshStatistics()
                     }
+            case .troubleshoot:
+                TroubleshootView()
             }
         }
     }

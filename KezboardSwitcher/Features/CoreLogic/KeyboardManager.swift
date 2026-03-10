@@ -44,6 +44,7 @@ class KeyboardManager {
     private var managedKeyboards: [Keyboard]
     private let layoutDetector: LayoutDetector
     var onKeyboardSwitch: ((Keyboard) -> Void)?
+    private(set) var hasReceivedEvents = false
 
     init(managedKeyboards: [Keyboard] = [], layoutDetector: LayoutDetector = LayoutDetector()) throws {
         self.logger = Logger(subsystem: "de.stevio.KezboardSwitcher", category: "KeyboardManager")
@@ -218,6 +219,10 @@ class KeyboardManager {
 
             let device = IOHIDElementGetDevice(element)
             Task { @MainActor [self] in
+                if !hasReceivedEvents {
+                    hasReceivedEvents = true
+                    logger.info("First HID event received — event delivery is working")
+                }
                 detectActiveKeyboard(device: device)
             }
         }
@@ -227,7 +232,16 @@ class KeyboardManager {
         guard let keyboardName = getKeyboardName(from: device) else {
             return
         }
-        if keyboardName == lastKeyboard.name {
+
+        let isSameKeyboard = keyboardName == lastKeyboard.name
+        if isSameKeyboard {
+            // Same keyboard — but verify the layout is correct (could be wrong after app restart)
+            guard let managed = managedKeyboards.first(where: { $0.name == keyboardName }),
+                  layoutDetector.currentLayoutId() != managed.layoutInfo.layoutId else {
+                return
+            }
+            logger.info("Layout mismatch for \(keyboardName) — correcting to \(managed.layoutInfo.layoutName)")
+            layoutDetector.switchToLayout(layoutId: managed.layoutInfo.layoutId)
             return
         }
 
@@ -244,6 +258,7 @@ class KeyboardManager {
         }
 
         // Track unmanaged keyboard to avoid repeated lookups on every keypress
+        logger.debug("Keyboard \(keyboardName) not in managed list (\(self.managedKeyboards.count) managed)")
         lastKeyboard = Keyboard(name: keyboardName, status: .new)
     }
 }

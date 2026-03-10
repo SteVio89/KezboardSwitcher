@@ -9,6 +9,7 @@ import SwiftUI
 
 struct LayoutSelectorView: View {
     @Environment(AppViewModel.self) private var viewModel
+    @State private var showRemoveConfirmation = false
 
     var body: some View {
         VStack {
@@ -31,6 +32,12 @@ struct LayoutSelectorView: View {
                         Spacer()
                         Button(keyboard.status == .ignored ? "Unignore" : "Ignore") {
                             viewModel.toggleIgnore(keyboard)
+                        }
+                        .controlSize(.small)
+                        Button(role: .destructive) {
+                            showRemoveConfirmation = true
+                        } label: {
+                            Image(systemName: "trash")
                         }
                         .controlSize(.small)
                     }
@@ -91,6 +98,16 @@ struct LayoutSelectorView: View {
                     Spacer()
                 }
             }
+        }
+        .alert("Remove Keyboard?", isPresented: $showRemoveConfirmation) {
+            Button("Cancel", role: .cancel) {}
+            Button("Remove", role: .destructive) {
+                if let keyboard = viewModel.selectedKeyboard {
+                    viewModel.removeKeyboard(keyboard)
+                }
+            }
+        } message: {
+            Text("Remove \"\(viewModel.selectedKeyboard?.name ?? "")\" from configuration? It will reappear as a new keyboard if still connected.")
         }
     }
 }

@@ -6,7 +6,8 @@
 //
 
 import AppKit
-import os.log
+import OSLog
+import UserNotifications
 
 enum AppState: Equatable {
     case loading
@@ -20,6 +21,7 @@ enum AppState: Equatable {
 enum DetailTab: Hashable {
     case configuration
     case statistics
+    case troubleshoot
 }
 
 @Observable @MainActor
@@ -31,6 +33,9 @@ final class AppViewModel {
     var saveFeedback: String?
     var selectedTab: DetailTab = .configuration
     var activeKeyboardName: String?
+
+    // Troubleshoot
+    var logEntries: [LogEntry] = []
 
     // Statistics
     var switchCountToday: Int = 0
@@ -100,7 +105,7 @@ final class AppViewModel {
         }.value
 
         do {
-            let manager = try KeyboardManager(managedKeyboards: configKeyboards, layoutDetector: layoutDetector)
+            let manager = try await createManagerWithRetry(configKeyboards: configKeyboards)
             manager.onKeyboardSwitch = { [weak self] keyboard in
                 self?.logger.debug("Switched to keyboard: \(keyboard.name)")
                 self?.activeKeyboardName = keyboard.name
@@ -129,15 +134,74 @@ final class AppViewModel {
 
             appState = .ready
             logger.debug("Initialized with \(self.keyboards.count) keyboard(s), \(self.layouts.count) layout(s)")
+            startEventWatchdog(manager: manager)
         } catch let error as KeyboardManagerError {
             switch error {
             case .openFailed, .creationFailed:
                 appState = .needsPermission
             }
             logger.error("Failed to initialize: \(error.localizedDescription)")
+            sendFailureNotification()
         } catch {
             appState = .error(error.localizedDescription)
             logger.error("Failed to initialize: \(error.localizedDescription)")
+        }
+    }
+
+    // MARK: - Retry & Notification
+
+    private static let maxRetries = 5
+    private static let retryDelay: Duration = .seconds(2)
+
+    private func createManagerWithRetry(configKeyboards: [Keyboard]) async throws -> KeyboardManager {
+        var lastError: Error?
+        for attempt in 1...Self.maxRetries {
+            do {
+                let manager = try KeyboardManager(managedKeyboards: configKeyboards, layoutDetector: layoutDetector)
+                if attempt > 1 {
+                    logger.info("HID manager opened on attempt \(attempt)")
+                }
+                return manager
+            } catch {
+                lastError = error
+                let hasPermission = KeyboardManager.hasInputMonitoringPermission()
+                logger.warning("HID open attempt \(attempt)/\(Self.maxRetries) failed (permission granted: \(hasPermission))")
+                if !hasPermission {
+                    // Permission genuinely missing — no point retrying
+                    throw error
+                }
+                if attempt < Self.maxRetries {
+                    try? await Task.sleep(for: Self.retryDelay)
+                }
+            }
+        }
+        throw lastError!
+    }
+
+    private func startEventWatchdog(manager: KeyboardManager) {
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(30))
+            guard let self, self.keyboardManager === manager else { return }
+            if !manager.hasReceivedEvents {
+                logger.warning("No HID events received after 30s — permission may be in a broken state")
+                sendFailureNotification(
+                    message: "Keyboard events are not being received. Try toggling Input Monitoring permission off and on in System Settings, then restart the app."
+                )
+            }
+        }
+    }
+
+    private func sendFailureNotification(
+        message: String = "Could not access keyboard input. Please check Input Monitoring permission in System Settings."
+    ) {
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert]) { granted, _ in
+            guard granted else { return }
+            let content = UNMutableNotificationContent()
+            content.title = "KezboardSwitcher"
+            content.body = message
+            let request = UNNotificationRequest(identifier: "hid-permission-failure", content: content, trigger: nil)
+            center.add(request)
         }
     }
 
@@ -155,6 +219,7 @@ final class AppViewModel {
         keyboards[index].layoutInfo = layout
         keyboards[index].status = .configured
         keyboardManager?.setManagedKeyboards(keyboards)
+        syncSelectedKeyboard(name: keyboard.name)
     }
 
     func toggleIgnore(_ keyboard: Keyboard) {
@@ -167,6 +232,29 @@ final class AppViewModel {
             keyboards[index].layoutInfo = LayoutInfo()
         }
         keyboardManager?.setManagedKeyboards(keyboards)
+        syncSelectedKeyboard(name: keyboard.name)
+    }
+
+    private func syncSelectedKeyboard(name: String) {
+        if selectedKeyboard?.name == name {
+            selectedKeyboard = keyboards.first { $0.name == name }
+        }
+    }
+
+    func removeKeyboard(_ keyboard: Keyboard) {
+        keyboards.removeAll { $0.name == keyboard.name }
+        if selectedKeyboard?.name == keyboard.name {
+            selectedKeyboard = nil
+        }
+        keyboardManager?.setManagedKeyboards(keyboards)
+    }
+
+    func reloadKeyboards() {
+        guard let manager = keyboardManager else { return }
+        let detected = manager.fetchConnectedKeyboards()
+        keyboards = Self.merge(config: keyboards, detected: detected)
+        manager.setManagedKeyboards(keyboards)
+        logger.debug("Reloaded keyboards: \(self.keyboards.count) total")
     }
 
     func saveConfig() {
@@ -213,5 +301,52 @@ final class AppViewModel {
     func resetStatistics() {
         statisticsService.deleteAll()
         refreshStatistics()
+    }
+
+    // MARK: - Troubleshoot
+
+    func fetchLogs() {
+        Task.detached(priority: .utility) {
+            do {
+                let store = try OSLogStore(scope: .currentProcessIdentifier)
+                let since = store.position(date: Date().addingTimeInterval(-3600))
+                let predicate = NSPredicate(format: "subsystem == %@", "de.stevio.KezboardSwitcher")
+                let entries = try store.getEntries(at: since, matching: predicate)
+                    .compactMap { $0 as? OSLogEntryLog }
+                    .map { LogEntry(date: $0.date, category: $0.category, level: $0.level, message: $0.composedMessage) }
+                await MainActor.run { self.logEntries = entries }
+            } catch {
+                await MainActor.run {
+                    self.logger.error("Failed to fetch logs: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+}
+
+struct LogEntry: Identifiable, Equatable {
+    let id: String
+    let date: Date
+    let category: String
+    let level: OSLogEntryLog.Level
+    let message: String
+
+    init(date: Date, category: String, level: OSLogEntryLog.Level, message: String) {
+        self.date = date
+        self.category = category
+        self.level = level
+        self.message = message
+        self.id = "\(date.timeIntervalSince1970)-\(category)-\(message)"
+    }
+
+    var levelLabel: String {
+        switch level {
+        case .debug: "DEBUG"
+        case .info: "INFO"
+        case .notice: "NOTICE"
+        case .error: "ERROR"
+        case .fault: "FAULT"
+        default: "LOG"
+        }
     }
 }
