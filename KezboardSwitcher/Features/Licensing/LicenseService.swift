@@ -101,8 +101,7 @@ struct LicenseService {
 
   /// Pinned Ed25519 public key for license signature verification.
   /// After server-side key rotation, a new binary with the updated key must be shipped.
-  private static let pinnedPublicKeyB64 = "icObTxuCxooYN4yu3JtHifK1c0XYXKMNKtJmsbESugM="
-
+  private static let pinnedPublicKeyB64 = "KwCZfVIUkhLVB2jfn0OypXfY8hWHgNPMzSxORKGjeXQ="
 
   private static var licenseFileURL: URL {
     FileManager.default
@@ -310,7 +309,7 @@ struct LicenseService {
     let dir = url.deletingLastPathComponent()
     try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
     let data = try JSONEncoder().encode(storedLicense)
-    try data.write(to: url, options: [.atomic, .completeFileProtection])
+    try data.write(to: url, options: [.atomic])
   }
 
   private func loadStoredLicense() -> StoredLicense? {
