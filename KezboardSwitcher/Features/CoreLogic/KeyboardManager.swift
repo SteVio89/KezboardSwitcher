@@ -40,11 +40,11 @@ class KeyboardManager {
     private var iohidManager: IOHIDManager?
     private var isOpen: Bool = false
     var lastKeyboard: Keyboard = Keyboard(name: "", status: .new)
-    var lastKeyboardName: String { lastKeyboard.name }
     private var managedKeyboards: [Keyboard]
     private let layoutDetector: LayoutDetector
     var onKeyboardSwitch: ((Keyboard) -> Void)?
     private(set) var hasReceivedEvents = false
+    var isPaused = false
 
     init(managedKeyboards: [Keyboard] = [], layoutDetector: LayoutDetector = LayoutDetector()) throws {
         self.logger = Logger(subsystem: "de.stevio.KezboardSwitcher", category: "KeyboardManager")
@@ -127,28 +127,6 @@ class KeyboardManager {
         IOHIDRequestAccess(kIOHIDRequestTypeListenEvent)
     }
 
-    /// Ground truth test: actually opens an IOHIDManager to verify permission.
-    /// More reliable than IOHIDCheckAccess after system-initiated restarts.
-    nonisolated static func tryOpenHIDManager() -> Bool {
-        let manager = IOHIDManagerCreate(kCFAllocatorDefault, IOOptionBits(kIOHIDOptionsTypeNone))
-        guard CFGetTypeID(manager) == IOHIDManagerGetTypeID() else { return false }
-
-        let matchingDict: [String: Any] = [
-            kIOHIDDeviceUsagePageKey as String: kHIDPage_GenericDesktop,
-            kIOHIDDeviceUsageKey as String: kHIDUsage_GD_Keyboard
-        ]
-        IOHIDManagerSetDeviceMatching(manager, matchingDict as CFDictionary)
-        IOHIDManagerScheduleWithRunLoop(manager, CFRunLoopGetMain(), CFRunLoopMode.defaultMode.rawValue)
-
-        let result = IOHIDManagerOpen(manager, IOOptionBits(kIOHIDOptionsTypeNone))
-        IOHIDManagerUnscheduleFromRunLoop(manager, CFRunLoopGetMain(), CFRunLoopMode.defaultMode.rawValue)
-        if result == kIOReturnSuccess {
-            IOHIDManagerClose(manager, IOOptionBits(kIOHIDOptionsTypeNone))
-            return true
-        }
-        return false
-    }
-
     private func createManager() throws {
         let hidManager = IOHIDManagerCreate(kCFAllocatorDefault, IOOptionBits(kIOHIDOptionsTypeNone))
         if CFGetTypeID(hidManager) != IOHIDManagerGetTypeID() {
@@ -229,6 +207,9 @@ class KeyboardManager {
     }
 
     private func detectActiveKeyboard(device: IOHIDDevice) {
+        // Paused: suppress switching, correction and lastKeyboard tracking.
+        // hasReceivedEvents keeps updating upstream so the watchdog still works.
+        if isPaused { return }
         guard let keyboardName = getKeyboardName(from: device) else {
             return
         }
@@ -241,7 +222,9 @@ class KeyboardManager {
                 return
             }
             logger.info("Layout mismatch for \(keyboardName) — correcting to \(managed.layoutInfo.layoutName)")
-            layoutDetector.switchToLayout(layoutId: managed.layoutInfo.layoutId)
+            if !layoutDetector.switchToLayout(layoutId: managed.layoutInfo.layoutId) {
+                logger.error("Failed to correct layout to \(managed.layoutInfo.layoutId)")
+            }
             return
         }
 
@@ -250,9 +233,12 @@ class KeyboardManager {
         for keyboard in managedKeyboards {
             if keyboard.name == keyboardName {
                 logger.debug("Switching layout to \(keyboard.layoutInfo.layoutName) for keyboard \(keyboardName)")
-                layoutDetector.switchToLayout(layoutId: keyboard.layoutInfo.layoutId)
-                lastKeyboard = keyboard
-                onKeyboardSwitch?(keyboard)
+                if layoutDetector.switchToLayout(layoutId: keyboard.layoutInfo.layoutId) {
+                    lastKeyboard = keyboard
+                    onKeyboardSwitch?(keyboard)
+                } else {
+                    logger.error("Failed to switch layout to \(keyboard.layoutInfo.layoutId) for keyboard \(keyboardName)")
+                }
                 return
             }
         }

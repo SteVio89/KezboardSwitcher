@@ -8,47 +8,46 @@
 import AppKit
 
 @MainActor
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem?
+    private lazy var pauseItem: NSMenuItem = {
+        let item = NSMenuItem(title: "Pause Switching", action: #selector(togglePause), keyEquivalent: "")
+        item.target = self
+        return item
+    }()
     private lazy var statusMenu: NSMenu = {
         let menu = NSMenu()
         let openItem = NSMenuItem(title: "Open Configuration", action: #selector(openConfiguration), keyEquivalent: ",")
         openItem.target = self
         menu.addItem(openItem)
+        menu.addItem(pauseItem)
         menu.addItem(NSMenuItem.separator())
         let quitItem = NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         menu.addItem(quitItem)
         return menu
     }()
     var openConfigWindow: (() -> Void)?
+    var onTogglePause: (() -> Void)?
+    var isPausedProvider: (() -> Bool)?
     var isFirstLaunch: Bool = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
-        if let button = statusItem?.button {
-            button.image = NSImage(named: "MenuBarIcon")
-        }
+        statusItem?.button?.image = NSImage(named: "MenuBarIcon")
+        // Assigning the menu lets AppKit open it on a normal click and handle
+        // highlight, positioning and accessibility natively — menu-bar managers
+        // (Bartender/Ice) and assistive tools drive a real NSMenu for free.
+        statusMenu.delegate = self
+        statusItem?.menu = statusMenu
 
-        // Monitor clicks on the status item
-        NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] event in
-            guard let self,
-                  let button = self.statusItem?.button,
-                  event.window == button.window else {
-                return event
-            }
-            if event.type == .rightMouseDown {
-                self.showMenu()
-            } else {
-                self.openConfiguration()
-            }
-            return nil
-        }
-
-        // Hide the window on launch unless this is the first launch (no config exists)
+        // Hide the config window on launch unless onboarding is still
+        // incomplete. Only the config window is closed — closing every window
+        // in NSApp.windows would also tear down the private NSStatusBarWindow
+        // hosting our menu-bar item, leaving the icon present but unclickable.
         if !isFirstLaunch {
             DispatchQueue.main.async {
-                for window in NSApp.windows {
+                for window in NSApp.windows where window.title == "KezboardSwitcher" {
                     window.close()
                 }
             }
@@ -59,11 +58,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
 
-    private func showMenu() {
-        guard let statusItem else { return }
-        statusItem.menu = statusMenu
-        statusItem.button?.performClick(nil)
-        statusItem.menu = nil
+    /// Refresh dynamic menu state just before AppKit shows the menu.
+    func menuWillOpen(_ menu: NSMenu) {
+        pauseItem.state = (isPausedProvider?() ?? false) ? .on : .off
+    }
+
+    @objc private func togglePause() {
+        onTogglePause?()
+        // Dim the menu-bar icon while switching is paused
+        statusItem?.button?.appearsDisabled = isPausedProvider?() ?? false
     }
 
     @objc private func openConfiguration() {

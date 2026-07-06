@@ -38,13 +38,6 @@ struct SignedLicense: Codable, Equatable {
   }
 }
 
-/// Wraps a signed license with the public key used for verification,
-/// so offline re-verification on launch doesn't require a network call.
-struct StoredLicense: Codable {
-  var signedLicense: SignedLicense
-  var publicKeyB64: String
-}
-
 // MARK: - Errors
 
 enum LicenseError: Error, LocalizedError {
@@ -94,14 +87,15 @@ struct LicenseService {
   #if DEBUG
     private static let baseURL = "http://localhost:3000"
   #else
-    private static let baseURL = "https://store.stevio.de"
+    private static let baseURL = "https://stevio.de"
   #endif
 
   private static let bundleID = "de.stevio.KezboardSwitcher"
 
   /// Pinned Ed25519 public key for license signature verification.
   /// After server-side key rotation, a new binary with the updated key must be shipped.
-  private static let pinnedPublicKeyB64 = "KwCZfVIUkhLVB2jfn0OypXfY8hWHgNPMzSxORKGjeXQ="
+  /// Internal (not private) so unit tests can assert forged licenses fail against it.
+  static let pinnedPublicKeyB64 = "7+CBehVba1YaCltKCL4az2u6+S74Y8g8/6yKpDYW24g="
 
   private static var licenseFileURL: URL {
     FileManager.default
@@ -165,20 +159,20 @@ struct LicenseService {
       // Pinned key can't verify → server has rotated keys → user needs a newer binary
       throw LicenseError.appUpdateRequired
     }
-    try save(StoredLicense(signedLicense: signed, publicKeyB64: Self.pinnedPublicKeyB64))
+    try save(signed)
     return signed
   }
 
   // MARK: - Deactivation
 
   func deactivate() async throws {
-    guard let stored = loadStoredLicense() else {
+    guard let signed = loadSignedLicense() else {
       throw LicenseError.noStoredLicense
     }
 
     let body: [String: String] = [
-      "license_key": stored.signedLicense.payload.licenseKey,
-      "machine_hash": stored.signedLicense.payload.machineHash,
+      "license_key": signed.payload.licenseKey,
+      "machine_hash": signed.payload.machineHash,
     ]
 
     var request = URLRequest(url: URL(string: "\(Self.baseURL)/api/license/deactivate")!)
@@ -201,6 +195,15 @@ struct LicenseService {
 
     if httpResponse.statusCode != 204 {
       if let apiError = try? JSONDecoder().decode(ServerErrorResponse.self, from: data) {
+        if isGoneOnServer(code: apiError.code) {
+          // The server no longer knows this activation — nothing left to
+          // deactivate remotely, so detach the machine locally and succeed.
+          logger.info(
+            "Server reports license gone (\(apiError.code, privacy: .public)); removing local license"
+          )
+          deleteLicenseFile()
+          return
+        }
         throw LicenseError.serverError(code: apiError.code, message: apiError.message)
       }
       throw LicenseError.deactivationFailed
@@ -208,6 +211,20 @@ struct LicenseService {
 
     deleteLicenseFile()
     logger.info("License deactivated successfully")
+  }
+
+  /// Returns true when a server error code means the license or activation no
+  /// longer exists server-side, so the local license file should be removed as
+  /// if deactivation had succeeded.
+  ///
+  /// The deactivate endpoint returns `license_invalid` for all gone cases
+  /// (unknown key, revoked license, activation not found); `license_revoked`
+  /// is accepted for future-proofing.
+  ///
+  /// - Parameter code: The `error` code from a `ServerErrorResponse`.
+  /// - Returns: True if the license is gone on the server.
+  func isGoneOnServer(code: String) -> Bool {
+    code == "license_invalid" || code == "license_revoked"
   }
 
   // MARK: - Verification
@@ -283,38 +300,34 @@ struct LicenseService {
 
   // MARK: - File Persistence
 
-  func hasStoredLicense() -> Bool {
-    FileManager.default.fileExists(atPath: Self.licenseFileURL.path)
-  }
-
   func load() -> SignedLicense? {
-    guard let stored = loadStoredLicense() else {
+    guard let signed = loadSignedLicense() else {
       logger.info("No stored license found")
       return nil
     }
 
     do {
-      try verify(stored.signedLicense, publicKeyB64: stored.publicKeyB64)
+      try verify(signed, publicKeyB64: Self.pinnedPublicKeyB64)
     } catch {
       logger.info("Stored license failed verification: \(error). Treating as unlicensed.")
       deleteLicenseFile()
       return nil
     }
 
-    return stored.signedLicense
+    return signed
   }
 
-  func save(_ storedLicense: StoredLicense) throws {
+  func save(_ signedLicense: SignedLicense) throws {
     let url = Self.licenseFileURL
     let dir = url.deletingLastPathComponent()
     try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-    let data = try JSONEncoder().encode(storedLicense)
+    let data = try JSONEncoder().encode(signedLicense)
     try data.write(to: url, options: [.atomic])
   }
 
-  private func loadStoredLicense() -> StoredLicense? {
+  private func loadSignedLicense() -> SignedLicense? {
     guard let data = try? Data(contentsOf: Self.licenseFileURL) else { return nil }
-    return try? JSONDecoder().decode(StoredLicense.self, from: data)
+    return try? JSONDecoder().decode(SignedLicense.self, from: data)
   }
 
   private func deleteLicenseFile() {
@@ -325,7 +338,14 @@ struct LicenseService {
 
 // MARK: - Server Error Response
 
-private struct ServerErrorResponse: Decodable {
+/// Mirrors the server's error JSON `{"error": "<code>", "message": "<text>"}`.
+/// Internal (not private) so unit tests can cover the decoding.
+struct ServerErrorResponse: Decodable {
   let code: String
   let message: String
+
+  enum CodingKeys: String, CodingKey {
+    case code = "error"
+    case message
+  }
 }

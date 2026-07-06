@@ -10,6 +10,8 @@ import SwiftUI
 struct PermissionOnboardingView: View {
     @Environment(AppViewModel.self) private var viewModel
 
+    @State private var pollTask: Task<Void, Never>?
+
     var body: some View {
         VStack(spacing: 24) {
             Spacer()
@@ -39,13 +41,40 @@ struct PermissionOnboardingView: View {
                 }
             }
 
+            Text("Enable KezboardSwitcher under Privacy & Security → Input Monitoring. The app resumes automatically once permission is granted.")
+                .multilineTextAlignment(.center)
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: 400)
+
             Spacer()
         }
         .padding()
         .frame(minWidth: 400, minHeight: 300)
-        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
-            Task {
-                await viewModel.initialize()
+        .onAppear {
+            startPolling()
+        }
+        .onDisappear {
+            pollTask?.cancel()
+        }
+    }
+
+    private func startPolling() {
+        pollTask?.cancel()
+        pollTask = Task { @MainActor in
+            // If permission already reads as granted here, the HID manager failed
+            // to open despite it (broken TCC state). Only re-initialize after a
+            // denied → granted transition so a stuck "granted" reading cannot
+            // trigger an initialize loop; "Check Again" covers that case manually.
+            var sawDenied = !KeyboardManager.hasInputMonitoringPermission()
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .milliseconds(333))
+                if !KeyboardManager.hasInputMonitoringPermission() {
+                    sawDenied = true
+                } else if sawDenied {
+                    await viewModel.initialize()
+                    return
+                }
             }
         }
     }

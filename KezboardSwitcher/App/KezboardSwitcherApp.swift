@@ -15,11 +15,10 @@ struct KezboardSwitcherApp: App {
     @Environment(\.openWindow) private var openWindow
 
     init() {
-        let configPath = FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent(".config/KezboardSwitcher/config.json")
-        let isFirstConfig = !FileManager.default.fileExists(atPath: configPath.path)
-        let isUnlicensed = !LicenseService().hasStoredLicense()
-        appDelegate.isFirstLaunch = isFirstConfig || isUnlicensed
+        // Single source of truth: the same onboardingCompleted flag that
+        // AppViewModel.initialize() routes on also decides window visibility,
+        // so the launch window can never desync from the onboarding gate.
+        appDelegate.isFirstLaunch = !UserDefaults.standard.bool(forKey: AppViewModel.onboardingCompletedKey)
     }
 
     var body: some Scene {
@@ -29,6 +28,12 @@ struct KezboardSwitcherApp: App {
                 .task {
                     appDelegate.openConfigWindow = { [openWindow] in
                         openWindow(id: "config")
+                    }
+                    appDelegate.onTogglePause = { [viewModel] in
+                        viewModel.isPaused.toggle()
+                    }
+                    appDelegate.isPausedProvider = { [viewModel] in
+                        viewModel.isPaused
                     }
                     // Use unstructured Task so initialization completes
                     // even if the window is closed immediately on launch

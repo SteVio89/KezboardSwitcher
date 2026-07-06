@@ -16,7 +16,7 @@ struct TroubleshootView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text("\(viewModel.logEntries.count) entries (last hour)")
+                Text("\(viewModel.logEntries.count) entries (this session)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Spacer()

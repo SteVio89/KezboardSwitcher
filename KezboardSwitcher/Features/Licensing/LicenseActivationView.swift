@@ -29,7 +29,7 @@ struct LicenseActivationView: View {
                 Text("Enter the license key from your purchase to activate KezboardSwitcher.")
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
-                Link("Get a license at store.stevio.de", destination: URL(string: "https://store.stevio.de")!)
+                Link("Get a license at stevio.de", destination: URL(string: "https://stevio.de")!)
                     .font(.callout)
             }
             .frame(maxWidth: 350)

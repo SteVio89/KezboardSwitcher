@@ -17,9 +17,18 @@ struct ContentView: View {
                 .frame(minWidth: 400, minHeight: 300)
         case .unlicensed:
             LicenseActivationView()
-        case .onboarding, .needsPermission:
+        case .onboarding:
             OnboardingWizardView()
                 .frame(minWidth: 560, minHeight: 500)
+        case .needsPermission:
+            // Already-onboarded users get a focused permission-recovery screen
+            // instead of the full first-run wizard (which ends in license entry).
+            if UserDefaults.standard.bool(forKey: AppViewModel.onboardingCompletedKey) {
+                PermissionOnboardingView()
+            } else {
+                OnboardingWizardView()
+                    .frame(minWidth: 560, minHeight: 500)
+            }
         case .ready:
             VStack(spacing: 0) {
                 HStack(spacing: 0) {

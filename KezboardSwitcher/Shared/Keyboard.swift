@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum KeyboardStatus: String, CaseIterable, Codable, Hashable, Equatable {
+enum KeyboardStatus: String, Codable, Hashable {
     case new
     case configured
     case ignored
@@ -24,7 +24,7 @@ enum KeyboardStatus: String, CaseIterable, Codable, Hashable, Equatable {
     }
 }
 
-struct LayoutInfo: Codable, Hashable, Equatable {
+struct LayoutInfo: Codable, Hashable {
     var layoutId: String
     var layoutName: String
     var isEnabled: Bool
@@ -47,7 +47,7 @@ struct LayoutInfo: Codable, Hashable, Equatable {
     }
 }
 
-struct Keyboard: Codable, Hashable, Equatable, Identifiable {
+struct Keyboard: Codable, Hashable, Identifiable {
     var name: String
     var status: KeyboardStatus
     var layoutInfo: LayoutInfo
@@ -61,14 +61,3 @@ struct Keyboard: Codable, Hashable, Equatable, Identifiable {
     }
 }
 
-extension Keyboard: CustomStringConvertible {
-    var description: String {
-        return "Keyboard(name: \"\(name)\", status: \(status.displayName), layoutInfo: \(layoutInfo))"
-    }
-}
-
-extension LayoutInfo: CustomStringConvertible {
-    var description: String {
-        return "LayoutInfo(id: \"\(layoutId)\", name: \"\(layoutName)\")"
-    }
-}

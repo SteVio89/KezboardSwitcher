@@ -66,8 +66,13 @@ struct LayoutDetector {
         return Unmanaged<CFString>.fromOpaque(idRef).takeUnretainedValue() as String
     }
 
-    func switchToLayout(layoutId: String) {
+    /// Selects the enabled input source with the given ID as the active keyboard layout.
+    /// - Parameter layoutId: The `kTISPropertyInputSourceID` of the layout to activate.
+    /// - Returns: `true` if `TISSelectInputSource` succeeded; `false` if the layout is
+    ///   not among the enabled input sources, is not selectable, or selection failed.
+    func switchToLayout(layoutId: String) -> Bool {
         var found = false
+        var switched = false
         enumerateInputSources { inputSource in
             guard let idRef = TISGetInputSourceProperty(inputSource, kTISPropertyInputSourceID) else {
                 return true
@@ -88,6 +93,7 @@ struct LayoutDetector {
                 let status = TISSelectInputSource(inputSource)
                 if status == noErr {
                     logger.debug("Switched to layout \(layoutId)")
+                    switched = true
                 } else {
                     logger.error("TISSelectInputSource failed with status \(status) for \(layoutId)")
                 }
@@ -98,6 +104,7 @@ struct LayoutDetector {
         if !found {
             logger.error("Layout \(layoutId) not found in enabled input sources")
         }
+        return switched
     }
 
     /// Iterates over keyboard input sources. Return `true` to continue, `false` to stop.

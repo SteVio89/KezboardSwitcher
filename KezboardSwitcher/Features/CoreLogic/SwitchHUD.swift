@@ -14,11 +14,15 @@ final class SwitchHUD {
 
     private var panel: NSPanel?
     private var hideTask: Task<Void, Never>?
+    // Guards against a stale fade-out completion hiding a panel that a newer
+    // show() has re-presented (rapid A→B→A switches around the hide delay).
+    private var generation = 0
 
     private init() {}
 
     func show(keyboardName: String, layoutName: String) {
         hideTask?.cancel()
+        generation += 1
 
         let hostingView = NSHostingView(rootView: SwitchHUDContent(
             layoutName: layoutName,
@@ -43,11 +47,15 @@ final class SwitchHUD {
         hideTask = Task { @MainActor in
             try? await Task.sleep(for: .seconds(1.5))
             guard !Task.isCancelled else { return }
+            let fadeGeneration = generation
             NSAnimationContext.runAnimationGroup({ context in
                 context.duration = 0.3
                 panel.animator().alphaValue = 0
-            }, completionHandler: {
-                panel.orderOut(nil)
+            }, completionHandler: { [weak self] in
+                MainActor.assumeIsolated {
+                    guard let self, self.generation == fadeGeneration else { return }
+                    panel.orderOut(nil)
+                }
             })
         }
     }

@@ -9,14 +9,6 @@ import Foundation
 import SQLite3
 import os.log
 
-struct SwitchEvent {
-    let id: Int64
-    let timestamp: Date
-    let keyboardName: String
-    let layoutId: String
-    let layoutName: String
-}
-
 struct KeyboardUsage: Identifiable {
     let keyboardName: String
     let switchCount: Int
@@ -78,14 +70,21 @@ final class StatisticsService: Sendable {
         withDB { db in
             let sql = "INSERT INTO switch_events (timestamp, keyboard_name, layout_id, layout_name) VALUES (?, ?, ?, ?)"
             var stmt: OpaquePointer?
-            guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else { return }
+            guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
+                let msg = String(cString: sqlite3_errmsg(db))
+                logger.error("Failed to prepare switch insert: \(msg)")
+                return
+            }
             defer { sqlite3_finalize(stmt) }
 
             sqlite3_bind_double(stmt, 1, Date().timeIntervalSince1970)
             sqlite3_bind_text(stmt, 2, (keyboardName as NSString).utf8String, -1, Self.SQLITE_TRANSIENT)
             sqlite3_bind_text(stmt, 3, (layoutId as NSString).utf8String, -1, Self.SQLITE_TRANSIENT)
             sqlite3_bind_text(stmt, 4, (layoutName as NSString).utf8String, -1, Self.SQLITE_TRANSIENT)
-            sqlite3_step(stmt)
+            if sqlite3_step(stmt) != SQLITE_DONE {
+                let msg = String(cString: sqlite3_errmsg(db))
+                logger.error("Failed to record switch: \(msg)")
+            }
         }
     }
 

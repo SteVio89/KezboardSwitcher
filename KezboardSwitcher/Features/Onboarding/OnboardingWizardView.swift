@@ -280,6 +280,8 @@ private struct PrivacyBullet: View {
 // MARK: - Permission Step
 
 private struct PermissionStep: View {
+    @Environment(AppViewModel.self) private var viewModel
+
     @Binding var permissionGranted: Bool
 
     @State private var pollTask: Task<Void, Never>?
@@ -311,12 +313,25 @@ private struct PermissionStep: View {
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: 380)
 
-                Button("Grant Permission") {
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        KeyboardManager.requestInputMonitoringPermission()
+                HStack(spacing: 12) {
+                    Button("Grant Permission") {
+                        DispatchQueue.global(qos: .userInitiated).async {
+                            KeyboardManager.requestInputMonitoringPermission()
+                        }
                     }
+                    .buttonStyle(.borderedProminent)
+
+                    Button("Open System Settings") {
+                        viewModel.openSystemSettings()
+                    }
+                    .buttonStyle(.bordered)
                 }
-                .buttonStyle(.borderedProminent)
+
+                Text("If no permission dialog appears, enable KezboardSwitcher manually under Privacy & Security → Input Monitoring.")
+                    .multilineTextAlignment(.center)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: 400)
 
                 Text("If you already granted permission and the app was restarted automatically, quit the app (⌘Q) and reopen it manually.")
                     .multilineTextAlignment(.center)
@@ -361,7 +376,44 @@ private struct PermissionStep: View {
 // MARK: - License Step
 
 private struct LicenseStep: View {
+    @Environment(AppViewModel.self) private var viewModel
+
+    @State private var hasStoredLicense = false
+
     var body: some View {
-        LicenseActivationView()
+        Group {
+            if hasStoredLicense {
+                VStack(spacing: 20) {
+                    Spacer()
+
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.system(size: 64))
+                        .foregroundStyle(.green)
+
+                    Text("License already active on this device")
+                        .font(.title2.bold())
+
+                    Text("No activation needed — your existing license was found and verified.")
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: 380)
+
+                    Button("Finish") {
+                        Task {
+                            await viewModel.initialize()
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+
+                    Spacer()
+                }
+                .padding(.horizontal, 32)
+            } else {
+                LicenseActivationView()
+            }
+        }
+        .onAppear {
+            hasStoredLicense = viewModel.hasStoredLicense()
+        }
     }
 }

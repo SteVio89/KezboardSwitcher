@@ -31,7 +31,9 @@ No more manually toggling layouts every time you switch keyboards.
 - **Menu bar app** — runs silently in the background with no Dock icon
 - **Per-keyboard configuration** — assign any enabled macOS input source to each keyboard
 - **Ignore list** — mark keyboards you don't want to trigger switches (e.g. YubiKey, Touch Bar)
+- **Switch HUD** — a brief on-screen overlay confirms the layout each time it switches
 - **Statistics** — track how often you switch keyboards with daily charts and per-keyboard usage breakdowns
+- **Guided onboarding** — a first-launch wizard walks you through privacy, permissions and license activation
 - **Persistent config** — settings saved to `~/.config/KezboardSwitcher/config.json`
 
 ## Screenshots
@@ -46,6 +48,7 @@ No more manually toggling layouts every time you switch keyboards.
 
 - macOS 15.5 or later
 - **Input Monitoring** permission (required for keyboard detection)
+- A valid license key to activate the app (see [Licensing](#licensing))
 
 ### Build from Source
 
@@ -62,7 +65,7 @@ The built app will be in `~/Library/Developer/Xcode/DerivedData/KezboardSwitcher
 - **Left-click** the menu bar icon to open the configuration window
 - **Right-click** for the context menu (Open Configuration / Quit)
 - The app starts minimized to the menu bar on subsequent launches
-- On first launch, the configuration window opens automatically
+- On first launch, a setup wizard guides you through welcome, privacy, Input Monitoring permission and license activation before the app becomes active
 
 ### Configuring a Keyboard
 
@@ -79,6 +82,18 @@ KezboardSwitcher requires **Input Monitoring** access to detect which keyboard y
 
 > The app sandbox is disabled because IOKit HID access is not available in sandboxed apps.
 
+### Licensing
+
+KezboardSwitcher is activated with a license key. On activation the app contacts the
+activation server (`https://stevio.de`), which returns an **Ed25519-signed license** bound to
+the current machine. The signature is verified against a public key pinned in the binary, so
+after the first activation the license is validated **offline** on every launch.
+
+- The signed license is stored at `~/Library/Application Support/KezboardSwitcher/license.json`
+- A license is tied to one machine via a hardware-derived machine hash; use the wizard's
+  deactivation flow to move it to another Mac
+- Debug builds talk to `http://localhost:3000` instead of the production server
+
 ## Architecture
 
 ```
@@ -86,9 +101,13 @@ KezboardSwitcher/
   App/                          # App entry point and delegate
   Features/
     Configuration/              # ConfigService, AppViewModel
-      View/                     # ContentView, KeyboardListView, LayoutSelectorView
-    CoreLogic/                  # KeyboardManager (IOKit HID), LayoutDetector (TIS API)
-    Statistics/                 # StatisticsService (SQLite), StatisticsView
+      View/                     # ContentView, KeyboardListView, LayoutSelectorView,
+                                #   PermissionOnboardingView, TroubleshootView
+    CoreLogic/                  # KeyboardManager (IOKit HID), LayoutDetector (TIS API), SwitchHUD
+    Licensing/                  # LicenseService (Ed25519 verification), LicenseActivationView
+    Onboarding/                 # OnboardingWizardView (first-launch setup)
+    Statistics/                 # StatisticsService (SQLite)
+      View/                     # StatisticsView
   Shared/                       # Keyboard model, Theme
 ```
 
@@ -98,6 +117,8 @@ The app uses a straightforward SwiftUI + `@Observable` architecture:
 - **LayoutDetector** — wraps Carbon's Text Input Source (TIS) API to enumerate and switch input layouts
 - **ConfigService** — persists keyboard-to-layout mappings as JSON
 - **StatisticsService** — records switch events in a local SQLite database
+- **SwitchHUD** — presents the brief on-screen overlay shown on each layout switch
+- **LicenseService** — activates and verifies the Ed25519-signed, machine-bound license
 - **AppViewModel** — ties everything together as the single source of truth
 
 ## Development
@@ -109,6 +130,20 @@ xcodebuild -project KezboardSwitcher.xcodeproj -scheme KezboardSwitcher -configu
 # Run tests
 xcodebuild test -project KezboardSwitcher.xcodeproj -scheme KezboardSwitcher -only-testing:KezboardSwitcherTests
 ```
+
+To reset local state (stored license, onboarding flag) back to a fresh-install condition:
+
+```bash
+just reset
+```
+
+It also prints the `tccutil` command to reset the Input Monitoring permission.
+
+### Release / Distribution
+
+Distribution builds are produced from Xcode: **Product > Archive**, then distribute the
+archive from the Organizer with **Developer ID** signing and Apple notarization. Note that
+release builds verify licenses against the production server (`https://stevio.de`).
 
 ## License
 

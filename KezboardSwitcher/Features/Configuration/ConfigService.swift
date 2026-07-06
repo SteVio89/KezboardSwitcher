@@ -40,7 +40,23 @@ struct ConfigService {
             return config.keyboards
         } catch {
             logger.error("Failed to load config: \(error.localizedDescription)")
+            backUpCorruptConfig()
             return []
+        }
+    }
+
+    /// Moves an unreadable config file aside to `config.json.bak` so the next
+    /// save cannot silently destroy the user's data. An older backup is replaced.
+    private func backUpCorruptConfig() {
+        let backupURL = configURL.appendingPathExtension("bak")
+        do {
+            if FileManager.default.fileExists(atPath: backupURL.path) {
+                try FileManager.default.removeItem(at: backupURL)
+            }
+            try FileManager.default.moveItem(at: configURL, to: backupURL)
+            logger.error("Moved corrupt config to \(backupURL.path)")
+        } catch {
+            logger.error("Failed to back up corrupt config: \(error.localizedDescription)")
         }
     }
 

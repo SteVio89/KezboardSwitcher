@@ -41,6 +41,16 @@ struct MergeLogicTests {
         #expect(result[0].status == .ignored)
     }
 
+    @Test func duplicateDetectedNamesCollapseToOne() {
+        let detected = [
+            Keyboard(name: "KB1", status: .new),
+            Keyboard(name: "KB1", status: .new),
+        ]
+        let result = AppViewModel.merge(config: [], detected: detected)
+        #expect(result.count == 1)
+        #expect(result[0].name == "KB1")
+    }
+
     @Test func mixedMerge() {
         let config = [
             Keyboard(name: "KB1", status: .configured, layoutInfo: LayoutInfo(layoutId: "us", layoutName: "US")),

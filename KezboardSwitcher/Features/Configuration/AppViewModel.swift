@@ -33,6 +33,10 @@ final class AppViewModel {
     var saveFeedback: String?
     var selectedTab: DetailTab = .configuration
     var activeKeyboardName: String?
+    // In-memory only by design: pause never survives an app restart.
+    var isPaused = false {
+        didSet { keyboardManager?.isPaused = isPaused }
+    }
 
     // Troubleshoot
     var logEntries: [LogEntry] = []
@@ -81,8 +85,25 @@ final class AppViewModel {
         appState = .unlicensed
     }
 
+    /// Returns whether a verified license is already stored on this device.
+    ///
+    /// - Returns: `true` if a stored license exists and passes verification.
+    func hasStoredLicense() -> Bool {
+        licenseService.load() != nil
+    }
+
+    /// Marks onboarding as completed and requests notification authorization.
+    /// Requesting here (instead of lazily when a failure occurs) ensures the
+    /// permission dialog appears in a context the user understands.
     func completeOnboarding() {
         UserDefaults.standard.set(true, forKey: Self.onboardingCompletedKey)
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert]) { [logger] granted, error in
+            if let error {
+                logger.error("Notification authorization request failed: \(error.localizedDescription)")
+            } else {
+                logger.debug("Notification authorization granted: \(granted)")
+            }
+        }
     }
 
     func initialize() async {
@@ -117,13 +138,19 @@ final class AppViewModel {
                 )
             }
             self.keyboardManager = manager
+            // A recreated manager must inherit the current pause state
+            manager.isPaused = isPaused
+
+            let detected = manager.fetchConnectedKeyboards()
 
             // Restore persisted last keyboard to avoid false switch count on app restart
             if let persistedName = UserDefaults.standard.string(forKey: Self.lastKeyboardKey), !persistedName.isEmpty {
                 manager.lastKeyboard = Keyboard(name: persistedName, status: .new)
+                // Show the active-keyboard header immediately, but only if that keyboard is still connected
+                if detected.contains(where: { $0.name == persistedName }) {
+                    activeKeyboardName = persistedName
+                }
             }
-
-            let detected = manager.fetchConnectedKeyboards()
             keyboards = Self.merge(config: configKeyboards, detected: detected)
 
             layouts = layoutDetector.getAllLayouts()
@@ -178,12 +205,21 @@ final class AppViewModel {
         throw lastError!
     }
 
+    private static let watchdogWindowSeconds: Double = 30
+
     private func startEventWatchdog(manager: KeyboardManager) {
         Task { @MainActor [weak self] in
-            try? await Task.sleep(for: .seconds(30))
+            try? await Task.sleep(for: .seconds(Self.watchdogWindowSeconds))
             guard let self, self.keyboardManager === manager else { return }
-            if !manager.hasReceivedEvents {
-                logger.warning("No HID events received after 30s — permission may be in a broken state")
+            if manager.hasReceivedEvents { return }
+            // Distinguish "user simply hasn't typed" from a broken TCC state:
+            // CGEventSource sees system-wide keydowns without needing Input Monitoring.
+            let sinceLastKeyDown = CGEventSource.secondsSinceLastEventType(.hidSystemState, eventType: .keyDown)
+            if sinceLastKeyDown > Self.watchdogWindowSeconds {
+                logger.debug("No system-wide keydown within the watchdog window — rescheduling watchdog")
+                startEventWatchdog(manager: manager)
+            } else {
+                logger.warning("System saw keydowns but no HID events reached us after \(Self.watchdogWindowSeconds)s — permission may be in a broken state")
                 sendFailureNotification(
                     message: "Keyboard events are not being received. Try toggling Input Monitoring permission off and on in System Settings, then restart the app."
                 )
@@ -195,8 +231,11 @@ final class AppViewModel {
         message: String = "Could not access keyboard input. Please check Input Monitoring permission in System Settings."
     ) {
         let center = UNUserNotificationCenter.current()
-        center.requestAuthorization(options: [.alert]) { granted, _ in
-            guard granted else { return }
+        center.getNotificationSettings { [logger] settings in
+            guard settings.authorizationStatus == .authorized else {
+                logger.warning("Cannot deliver failure notification — notifications not authorized (status: \(settings.authorizationStatus.rawValue))")
+                return
+            }
             let content = UNMutableNotificationContent()
             content.title = "KezboardSwitcher"
             content.body = message
@@ -207,8 +246,11 @@ final class AppViewModel {
 
     nonisolated static func merge(config: [Keyboard], detected: [Keyboard]) -> [Keyboard] {
         var result = config
-        let configNames = Set(config.map(\.name))
-        for keyboard in detected where !configNames.contains(keyboard.name) {
+        // Seeded with config names and grown as we append, so duplicate HID
+        // interfaces with identical product strings collapse to one entry.
+        var seenNames = Set(config.map(\.name))
+        for keyboard in detected where !seenNames.contains(keyboard.name) {
+            seenNames.insert(keyboard.name)
             result.append(keyboard)
         }
         return result
