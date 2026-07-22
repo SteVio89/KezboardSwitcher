@@ -145,6 +145,21 @@ Distribution builds are produced from Xcode: **Product > Archive**, then distrib
 archive from the Organizer with **Developer ID** signing and Apple notarization. Note that
 release builds verify licenses against the production server (`https://stevio.de`).
 
+#### Packaging the exported `.app` as a DMG
+
+Run this from the directory containing the exported `KezboardSwitcher.app`:
+
+```bash
+STAGE=$(mktemp -d)
+ditto KezboardSwitcher.app "$STAGE/KezboardSwitcher.app"
+ln -s /Applications "$STAGE/Applications"
+hdiutil create -volname KezboardSwitcher -srcfolder "$STAGE" -ov -format UDZO KezboardSwitcher.dmg
+rm -rf "$STAGE"
+```
+
+The `/Applications` symlink gives the drag-to-install window. The notarization ticket is
+already stapled into the exported app by the Organizer.
+
 ## License
 
 Copyright (c) 2026 Stefan Viol. All rights reserved.
