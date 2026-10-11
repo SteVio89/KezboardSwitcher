@@ -11,6 +11,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/platform-macOS%2015.5%2B-blue" alt="macOS 15.5+">
   <img src="https://img.shields.io/badge/swift-5-orange" alt="Swift 5">
+  <img src="https://img.shields.io/badge/license-GPL--3.0-green" alt="GPL-3.0">
 </p>
 
 ---
@@ -36,19 +37,18 @@ No more manually toggling layouts every time you switch keyboards.
 - **Guided onboarding** — a first-launch wizard walks you through privacy, permissions and license activation
 - **Persistent config** — settings saved to `~/.config/KezboardSwitcher/config.json`
 
-## Screenshots
-
-| Configuration | Statistics |
-|:---:|:---:|
-| Assign layouts to keyboards | Track your switching patterns |
-
 ## Installation
 
 ### Requirements
 
 - macOS 15.5 or later
 - **Input Monitoring** permission (required for keyboard detection)
-- A valid license key to activate the app (see [Licensing](#licensing))
+- A license key, if you use the prebuilt app (see [Licensing](#licensing))
+
+### Prebuilt App
+
+Signed and notarized builds are available at [stevio.de](https://stevio.de). Buying a license
+is the easiest way to get the app and supports its development.
 
 ### Build from Source
 
@@ -59,6 +59,11 @@ xcodebuild -project KezboardSwitcher.xcodeproj -scheme KezboardSwitcher -configu
 ```
 
 The built app will be in `~/Library/Developer/Xcode/DerivedData/KezboardSwitcher-*/Build/Products/Release/`.
+
+Before building, set `DEVELOPMENT_TEAM` in the project to your own Apple team (or sign locally).
+Source builds still contain the license check described under [Licensing](#licensing); under the
+GPL you are free to modify that in your own build. If you distribute a modified version, please
+use your own bundle identifier instead of `de.stevio.KezboardSwitcher`.
 
 ## Usage
 
@@ -162,6 +167,10 @@ already stapled into the exported app by the Organizer.
 
 ## License
 
-Copyright (c) 2026 Stefan Viol. All rights reserved.
+Copyright (c) 2026 Stefan Viol
 
-This is proprietary software. Unauthorized copying, distribution, or modification is strictly prohibited.
+KezboardSwitcher is free software: you can redistribute it and/or modify it under the terms of
+the [GNU General Public License v3.0](LICENSE) as published by the Free Software Foundation.
+
+It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the license for details.
